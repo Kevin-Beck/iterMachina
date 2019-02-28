@@ -6,18 +6,28 @@ using UnityEngine;
 public class LegoBox : MonoBehaviour
 {
     [SerializeField]
-    GameObject nodePrefab;
-    
+    GameObject nodePrefab;    
     List<GameObject> nodeBox;
-
     Vector3 nodeSpawnStart;
     int nodeCounter;
 
-    public void Start()
+
+    [SerializeField]
+    GameObject jointPrefab;
+    List<GameObject> jointBox;
+    Vector3 jointSpawnStart;
+    int jointCounter;
+
+
+    public void Awake()
     {
         nodeCounter = -1;
         nodeSpawnStart = gameObject.GetComponent<Transform>().position;
         nodeBox = new List<GameObject>();
+
+        jointCounter = -1;
+        jointSpawnStart = gameObject.GetComponent<Transform>().position + new Vector3(0, -3, 0);
+        jointBox = new List<GameObject>();
     }
 
     public GameObject getNode(Vector3 pos)
@@ -45,5 +55,30 @@ public class LegoBox : MonoBehaviour
     {
         nodeCounter++;
         nodeBox.Add(Instantiate(nodePrefab, nodeSpawnStart, Quaternion.identity));
+    }
+
+    public GameObject GetJoint(Vector3 pos)
+    {
+        if (jointCounter == -1)
+            CreateMoreJoints();
+        GameObject jointToSend = jointBox[jointCounter];
+        jointBox.RemoveAt(jointCounter);
+        jointCounter--;
+        jointToSend.GetComponent<Transform>().position = pos;
+
+        return jointToSend;
+    }
+    public void ReturnJoint(GameObject returnedJoint)
+    {
+        returnedJoint.GetComponent<JointScript>().Reset();
+        jointBox.Add(returnedJoint);
+        jointCounter++;
+        returnedJoint.GetComponent<Transform>().SetPositionAndRotation(new Vector3(jointCounter * 2, 0, 0) + jointSpawnStart, Quaternion.identity);
+    }
+
+    private void CreateMoreJoints()
+    {
+        jointCounter++;
+        jointBox.Add(Instantiate(jointPrefab, jointSpawnStart, Quaternion.identity));
     }
 }

@@ -25,18 +25,10 @@ public class Brain : MonoBehaviour
     [SerializeField]
     GameObject jointPrefab;
 
-    [SerializeField]
-    GameObject markerPrefab;
-
     List<GameObject> nodes = new List<GameObject>();
     List<GameObject> joints = new List<GameObject>();
 
-    [SerializeField]
-    GameObject testingNode; // temp
-
     Vector3 ILLEGALVECTOR = new Vector3(-999, -999, -999); // This is returned if no valid position is found for node
-    // Start is called before the first frame update
-
     
     public void TestBuilds()
     {
@@ -94,10 +86,22 @@ public class Brain : MonoBehaviour
         }
         return true;
     }
-    public void tempMakeJointObject()
+    /*
+    public void tempMakeJointObject() // temp
     {
-        Instantiate(jointPrefab, testingNode.transform.position + new Vector3(3, 0, 0), Quaternion.FromToRotation(testingNode.transform.position, new Vector3(0, 100, 0)));
+        Vector3 vector = testingCube.transform.position - testingNode.transform.position;
+        jointthing = Instantiate(jointPrefab, testingNode.transform.position + vector.normalized*.9f, Quaternion.FromToRotation(Vector3.right, vector));
+       
+        jointthing.GetComponent<JointScript>().SetBoneSize(vector.magnitude - 2.5f);
+        jointthing.GetComponent<JointScript>().ConnectBaseToNode(testingNode);
+        jointthing.GetComponent<JointScript>().ConnectEdgeToNode(testingCube);
     }
+    public void tempResetJointObject() //temp
+    {
+        jointthing.GetComponent<JointScript>().Reset();
+    }
+    */
+
     public void ConstructBodyFromGene()
     {
 
@@ -119,11 +123,12 @@ public class Brain : MonoBehaviour
 
         if (rch.Length > 0)
             return false;
-        Debug.Log(rch.Length);
-        Debug.DrawRay(oldNodePosition + vector.normalized * 1.5f, vector-(vector.normalized*3), Color.green, 60.0f, true);
-        
+        GameObject newlyCreatedJoint = parts.GetJoint(oldNodePosition + vector.normalized * .9f);
+        newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
 
-
+        newlyCreatedJoint.GetComponent<JointScript>().SetBoneSize(vector.magnitude - 2.5f);
+        newlyCreatedJoint.GetComponent<JointScript>().ConnectBaseToNode(oldNode);
+        newlyCreatedJoint.GetComponent<JointScript>().ConnectEdgeToNode(newNode);
         return true;
 
     }
