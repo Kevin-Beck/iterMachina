@@ -13,9 +13,6 @@ public class JointScript : MonoBehaviour
     [SerializeField]
     Renderer jointRender;
 
-  //  [SerializeField]
-  //  Rigidbody rb;
-
     float initSpring;
     // Start is called before the first frame update
     void Start()
@@ -26,7 +23,7 @@ public class JointScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        
+      
     }
 
     public void UpdateMuscles(float val)
