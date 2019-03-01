@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class JointSlider : MonoBehaviour
 {
     [SerializeField]
-    Slider slider;
+    Slider slider = null;
 
     [SerializeField]
     float A;
@@ -16,9 +16,9 @@ public class JointSlider : MonoBehaviour
     float C;
     
     [SerializeField]
-    private GameObject GM;
+    private GameObject GM = null;
     [SerializeField]
-    private JointScript js;
+    private JointScript js = null;
 
     private int counter;
     // Start is called before the first frame update
@@ -28,7 +28,7 @@ public class JointSlider : MonoBehaviour
         A = Random.Range(0f, 5f);
         B = Random.Range(0f, 3.2f);
         C = Random.Range(-1.8f, 1.8f);
-        
+
         js = GM.GetComponent<JointScript>();
     }
     

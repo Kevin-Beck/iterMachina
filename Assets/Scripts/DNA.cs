@@ -8,6 +8,12 @@ public class DNA
     List<Vector3> nodePositions;
     List<Instruction> designInstructions;
 
+    public void Awake()
+    {
+        nodePositions = new List<Vector3>();
+        designInstructions = new List<Instruction>();
+    }
+
     public string toData()
     {
         StringBuilder sb = new StringBuilder();

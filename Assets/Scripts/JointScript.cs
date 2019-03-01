@@ -5,35 +5,51 @@ using UnityEngine;
 public class JointScript : MonoBehaviour
 {
     [SerializeField]
-    SpringJoint posMuscle;
+    private SpringJoint posMuscle = null;
 
     [SerializeField]
-    SpringJoint negMuscle;
+    private SpringJoint negMuscle = null;
 
     [SerializeField]
-    Renderer jointRender;
+    private Renderer jointRender = null;
 
     [SerializeField]
-    Base baseScript;
+    private Base baseScript = null;
 
     [SerializeField]
-    Edge edgeScript;
+    private Edge edgeScript = null;
 
     [SerializeField]
-    Bone boneScript;
+    private Bone boneScript = null;
 
-    Vector3 homePosition;
-    Quaternion homeRotation;
+    private float A;
+    private float B;
+    private float C;
 
-    float initSpring;
+    private bool musclesOn;
+
+    private float initSpring;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        initSpring = posMuscle.spring;
-        homePosition = transform.position;
-        homeRotation = transform.rotation;
-    }
+        musclesOn = false;
+        A = Random.Range(0f, 5f);
+        B = Random.Range(0f, 3.2f);
+        C = Random.Range(-1.8f, 1.8f);
 
+        initSpring = posMuscle.spring;
+    }
+    public void FixedUpdate()
+    {
+        if(musclesOn)
+        {
+            UpdateMuscles(Mathf.Sin(A * Mathf.Cos(B * Time.fixedTime) + C));
+        }
+    }
+    public void ToggleMuscle()
+    {
+        musclesOn = !musclesOn;
+    }
     public void UpdateMuscles(float val)
     {
         posMuscle.spring = initSpring + val*initSpring;
@@ -65,6 +81,6 @@ public class JointScript : MonoBehaviour
         boneScript.ResetBone();
         baseScript.ResetBase();
         edgeScript.ResetEdge();
-
+        Physics.SyncTransforms();
     }
 }

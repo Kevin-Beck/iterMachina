@@ -4,53 +4,51 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
+    private Transform t;
 
     float stringStrength;
 
     Rigidbody rb;
     HingeJoint hj;
 
-    [SerializeField]
-    SpringJoint sj1;
-
-    [SerializeField]
-    SpringJoint sj2;
-
-    [SerializeField]
-    SpringJoint sj3;
-
-    [SerializeField]
-    SpringJoint sj4;
+    SpringJoint[] springsList;
 
     [SerializeField]
     FixedJoint fj;
 
+
+    Vector3 savedLocalPosition;
     float spring;
-    bool frozen;
 
     // Start is called before the first frame update
     void Awake()
     {
-        spring = sj1.spring;
+        t = GetComponent<Transform>();
+        springsList = GetComponents<SpringJoint>();
+        spring = springsList[0].spring;
         rb = GetComponent<Rigidbody>();
         hj = GetComponent<HingeJoint>();
         fj = GetComponent<FixedJoint>();
+        savedLocalPosition = t.localPosition;
     }
     public void ConnectToNode(GameObject baseN)
     {
         fj.connectedBody = baseN.GetComponent<Rigidbody>();
+        rb.useGravity = true;
     }
     public void ResetBase()
     {
-        sj1.spring = spring;
-        sj2.spring = spring;
-        sj3.spring = spring;
-        sj4.spring = spring;
-
-        fj.connectedBody = null;
-
+        foreach(SpringJoint sj in springsList)
+        {
+            sj.spring = spring;
+        }
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
+        t.localPosition = savedLocalPosition;
+        t.rotation = Quaternion.identity;
+
+        fj.connectedBody = null;
     }
 }

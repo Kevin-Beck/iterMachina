@@ -6,14 +6,14 @@ using UnityEngine;
 public class LegoBox : MonoBehaviour
 {
     [SerializeField]
-    GameObject nodePrefab;    
+    GameObject nodePrefab = null;    
     List<GameObject> nodeBox;
     Vector3 nodeSpawnStart;
     int nodeCounter;
 
 
     [SerializeField]
-    GameObject jointPrefab;
+    GameObject jointPrefab = null;
     List<GameObject> jointBox;
     Vector3 jointSpawnStart;
     int jointCounter;
@@ -73,7 +73,9 @@ public class LegoBox : MonoBehaviour
         returnedJoint.GetComponent<JointScript>().Reset();
         jointBox.Add(returnedJoint);
         jointCounter++;
-        returnedJoint.GetComponent<Transform>().SetPositionAndRotation(new Vector3(jointCounter * 2, 0, 0) + jointSpawnStart, Quaternion.identity);
+        returnedJoint.transform.position = new Vector3(jointCounter * 2, 0, 0) + jointSpawnStart;
+        returnedJoint.transform.rotation = Quaternion.identity;
+        
     }
 
     private void CreateMoreJoints()

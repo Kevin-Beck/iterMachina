@@ -340,9 +340,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parts: {fileID: 1997810509}
-  instantiationDimension: {x: 15, y: 15, z: 15}
+  instantiationDimension: {x: 7, y: 5, z: 7}
   spaceBetween: 1.5
-  numberOfDesiredNodes: 28
+  numberOfDesiredNodes: 4
   nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
     type: 3}
   jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,
@@ -1004,8 +1004,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 203819154}
-        m_MethodName: tempResetJointObject
+      - m_Target: {fileID: 1581126050}
+        m_MethodName: ReloadScene0
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1262,7 +1262,7 @@ GameObject:
   - component: {fileID: 1274668874}
   - component: {fileID: 1274668873}
   m_Layer: 5
-  m_Name: orientJointButton
+  m_Name: MuscleToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1329,7 +1329,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 203819154}
-        m_MethodName: tempMakeJointObject
+        m_MethodName: ToggleAllMuscles
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1466,6 +1466,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1581126051}
+  - component: {fileID: 1581126050}
   m_Layer: 0
   m_Name: GlobalController
   m_TagString: Untagged
@@ -1473,6 +1474,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1581126050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581126049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c57aec3392cf945a86c808dc80f36f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1581126051
 Transform:
   m_ObjectHideFlags: 0
@@ -1683,7 +1696,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: OrientJointObject
+  m_Text: Toggle Muscles
 --- !u!222 &2078544884
 CanvasRenderer:
   m_ObjectHideFlags: 0
