@@ -42,15 +42,13 @@ public class Brain : MonoBehaviour
         int good = 0;
         int bad = 0;
         origin = transform.position;
-        for (int i = 0; i < 10; i++)
-        {
-            if (ConstructNewRandomBody())
-                good++;
-            else
-                bad++;
 
-            DeconstructBody();
-        }
+        if (ConstructNewRandomBody())
+            good++;
+        else
+            bad++;
+
+        DeconstructBody();
         Debug.Log("Good: " + good + "  Bad: " + bad);
     }
     public void buildSingleBot()
@@ -62,8 +60,9 @@ public class Brain : MonoBehaviour
         int num = joints.Count;
         for(int i = 0; i < num; i++)
         {
-            parts.ReturnJoint(joints[0]);
+            GameObject.Destroy(joints[0]);
             joints.Remove(joints[0]);
+            Physics.SyncTransforms();
         }
 
         int val = nodes.Count;
@@ -125,7 +124,7 @@ public class Brain : MonoBehaviour
         if (rch.Length > 0)
             return false;
 
-        GameObject newlyCreatedJoint = parts.GetJoint(oldNode.transform.position + vector.normalized * .9f);
+        GameObject newlyCreatedJoint = Instantiate(jointPrefab, oldNode.transform.position + vector.normalized * .9f, Quaternion.identity);
         joints.Add(newlyCreatedJoint);
         newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
 

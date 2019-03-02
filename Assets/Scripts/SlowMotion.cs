@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class SlowMotion : MonoBehaviour
 {
-
-    float currentAmount = 0f;
-    float maxAmount = 5f;
+    [SerializeField]
+    GameObject br;
+    Brain sc;
 
     // Use this for initialization
     void Start()
     {
-
+        sc = br.GetComponent<Brain>();
     }
 
     // Update is called once per frame
@@ -28,6 +28,11 @@ public class SlowMotion : MonoBehaviour
 
                 Time.timeScale = 1.0f;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        }
+
+        if(Input.GetKey("x"))
+        {
+            sc.TestBuilds();
         }
 
     }

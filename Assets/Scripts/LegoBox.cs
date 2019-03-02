@@ -57,28 +57,6 @@ public class LegoBox : MonoBehaviour
         nodeBox.Add(Instantiate(nodePrefab, nodeSpawnStart, Quaternion.identity));
     }
 
-    public GameObject GetJoint(Vector3 pos)
-    {
-        if (jointCounter == -1)
-            CreateMoreJoints();
-        GameObject jointToSend = jointBox[jointCounter];
-        jointBox.RemoveAt(jointCounter);
-        jointCounter--;
-        jointToSend.GetComponent<Transform>().position = pos;
-
-        return jointToSend;
-    }
-    public void ReturnJoint(GameObject returnedJoint)
-    {
-        returnedJoint.GetComponent<JointScript>().Reset();
-        jointBox.Add(returnedJoint);
-        jointCounter++;
-        returnedJoint.transform.position = new Vector3(jointCounter * 2, 0, 0) + jointSpawnStart;
-        returnedJoint.transform.rotation = Quaternion.identity;
-
-        
-    }
-
     private void CreateMoreJoints()
     {
         jointCounter++;
