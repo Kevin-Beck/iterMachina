@@ -8,7 +8,7 @@ public class Base : MonoBehaviour
 
     float stringStrength;
 
-    Rigidbody rb;
+    public Rigidbody rb;
     HingeJoint hj;
 
     SpringJoint[] springsList;
@@ -33,12 +33,20 @@ public class Base : MonoBehaviour
     }
     public void ConnectToNode(GameObject baseN)
     {
-        fj.connectedBody = baseN.GetComponent<Rigidbody>();
-        rb.useGravity = true;
+        if(baseN != null)
+        {
+            fj.connectedBody = baseN.GetComponent<Rigidbody>();
+            rb.useGravity = true;
+        }
+        else
+        {
+            fj.connectedBody = null;
+        }
     }
     public void ResetBase()
     {
-        foreach(SpringJoint sj in springsList)
+     //   fj.connectedBody = null;
+        foreach (SpringJoint sj in springsList)
         {
             sj.spring = spring;
         }
@@ -49,6 +57,5 @@ public class Base : MonoBehaviour
         t.localPosition = savedLocalPosition;
         t.rotation = Quaternion.identity;
 
-        fj.connectedBody = null;
     }
 }

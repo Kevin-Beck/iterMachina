@@ -340,9 +340,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parts: {fileID: 1997810509}
-  instantiationDimension: {x: 7, y: 5, z: 7}
+  instantiationDimension: {x: 10, y: 5, z: 10}
   spaceBetween: 1.5
-  numberOfDesiredNodes: 4
+  numberOfDesiredNodes: 8
   nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
     type: 3}
   jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,
@@ -1467,6 +1467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1581126051}
   - component: {fileID: 1581126050}
+  - component: {fileID: 1581126052}
   m_Layer: 0
   m_Name: GlobalController
   m_TagString: Untagged
@@ -1500,6 +1501,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1581126052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581126049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f32571befbfb6c848be9eec65cc97d62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1997810508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,7 +1554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997810508}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -999, z: 0}
+  m_LocalPosition: {x: 0, y: 10, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

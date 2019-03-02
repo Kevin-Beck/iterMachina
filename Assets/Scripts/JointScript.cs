@@ -79,6 +79,8 @@ public class JointScript : MonoBehaviour
     {
 
         boneScript.ResetBone();
+        baseScript.ConnectToNode(edgeScript.gameObject);
+        edgeScript.ConnectToNode(baseScript.gameObject);
         baseScript.ResetBase();
         edgeScript.ResetEdge();
         Physics.SyncTransforms();

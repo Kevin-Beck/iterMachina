@@ -5,7 +5,7 @@ using UnityEngine;
 public class Edge : MonoBehaviour
 {
     FixedJoint fj;
-    Rigidbody rb;
+    public Rigidbody rb;
     Transform t;
     Vector3 localPosition;
     Quaternion localRotation;
@@ -20,17 +20,26 @@ public class Edge : MonoBehaviour
     }
     public void ConnectToNode(GameObject edgeN)
     {
-        fj.connectedBody = edgeN.GetComponent<Rigidbody>();
-        rb.useGravity = true;
+        if(edgeN != null)
+        {
+            fj.connectedBody = edgeN.GetComponent<Rigidbody>();
+            rb.useGravity = true;
+        }
+        else
+        {
+            fj.connectedBody = null;
+        }
     }
     public void ResetEdge()
     {
+
+     //   fj.connectedBody = null;
+
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         t.localRotation = Quaternion.identity;
         t.localPosition = localPosition;
 
-        fj.connectedBody = null;
     }
 }

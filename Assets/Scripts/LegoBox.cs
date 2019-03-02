@@ -75,6 +75,7 @@ public class LegoBox : MonoBehaviour
         jointCounter++;
         returnedJoint.transform.position = new Vector3(jointCounter * 2, 0, 0) + jointSpawnStart;
         returnedJoint.transform.rotation = Quaternion.identity;
+
         
     }
 

@@ -63,7 +63,7 @@ public class Brain : MonoBehaviour
         for(int i = 0; i < num; i++)
         {
             parts.ReturnJoint(joints[0]);
-            nodes.Remove(joints[0]);
+            joints.Remove(joints[0]);
         }
 
         int val = nodes.Count;
@@ -115,7 +115,7 @@ public class Brain : MonoBehaviour
         // get direction vector between the two nodes
 
         Vector3 vector = (newNode.transform.position - oldNode.transform.position);
-        if (vector.magnitude < 3.1f)
+        if (vector.magnitude < 3.1f) 
             return false;
 
         Physics.SyncTransforms();
