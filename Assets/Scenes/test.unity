@@ -191,8 +191,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 203819154}
-        m_MethodName: MakeBody
+      - m_Target: {fileID: 1581126050}
+        m_MethodName: GeneratePopulation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -310,58 +310,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &203819153
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 203819155}
-  - component: {fileID: 203819154}
-  m_Layer: 0
-  m_Name: braintest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &203819154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203819153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 236c58498f0d2124f91c4f028536008e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parts: {fileID: 1997810509}
-  instantiationDimension: {x: 10, y: 5, z: 10}
-  spaceBetween: 1.5
-  numberOfDesiredNodes: 8
-  numberOfExtraConnections: 2
-  nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
-    type: 3}
-  jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,
-    type: 3}
---- !u!4 &203819155
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203819153}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &357625658
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,8 +389,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 203819154}
-        m_MethodName: DeconstructBody
+      - m_Target: {fileID: 1581126050}
+        m_MethodName: DeconstructPopulation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -715,8 +663,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 203819154}
-        m_MethodName: ToggleAllRenderers
+      - m_Target: {fileID: 1581126050}
+        m_MethodName: ToggleAllRenders
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -840,8 +788,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: 0.26714563, y: 0.43487763, z: -0.1368365, w: 0.8489938}
-  m_LocalPosition: {x: -42.376625, y: 41.639, z: -39.941933}
+  m_LocalRotation: {x: 0.2628301, y: 0.7237438, z: -0.3620576, w: 0.5253852}
+  m_LocalPosition: {x: -12.889174, y: 30.394592, z: 23.29184}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1141,11 +1089,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961529262}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: -1.5, z: 18.19}
-  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_LocalPosition: {x: 0, y: -2, z: 0}
+  m_LocalScale: {x: 100, y: 1, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1201829122
 GameObject:
@@ -1243,7 +1191,7 @@ RectTransform:
   - {fileID: 1274668872}
   - {fileID: 937654829}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1329,7 +1277,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 203819154}
+      - m_Target: {fileID: 1581126050}
         m_MethodName: ToggleAllMuscles
         m_Mode: 1
         m_Arguments:
@@ -1488,6 +1436,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c57aec3392cf945a86c808dc80f36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numberPerRow: 14
+  brainPrefab: {fileID: 3334053556957822947, guid: d8c0562d47e373c46970d94ed2500528,
+    type: 3}
 --- !u!4 &1581126051
 Transform:
   m_ObjectHideFlags: 0
@@ -1514,7 +1465,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32571befbfb6c848be9eec65cc97d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  br: {fileID: 203819153}
 --- !u!1 &1997810508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,7 +1477,7 @@ GameObject:
   - component: {fileID: 1997810509}
   m_Layer: 0
   m_Name: LegoBox
-  m_TagString: Untagged
+  m_TagString: LegoBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1545,7 +1495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expectedNodeCount: 1000
-  expectedJointCount: 900
+  expectedJointCount: 1000
   nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
     type: 3}
   jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,
@@ -1562,7 +1512,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2066185961
 GameObject:

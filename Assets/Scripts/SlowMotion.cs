@@ -4,27 +4,17 @@ using UnityEngine;
 
 public class SlowMotion : MonoBehaviour
 {
-    [SerializeField]
-    GameObject br;
-    Brain sc;
-
-    // Use this for initialization
-    void Start()
-    {
-        sc = br.GetComponent<Brain>();
-    }
-
     // Update is called once per frame
     void Update()
     {
 
+        if (Input.GetKeyDown("x"))
+        {
+            Time.timeScale = 2 * Time.timeScale;
+        }
         if (Input.GetKeyDown("z"))
         {
-
-            if (Time.timeScale == 1.0f)
-                Time.timeScale = 0.0f;
-            else
-                Time.timeScale = 1.0f;
+            Time.timeScale = 0.5f * Time.timeScale;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
     }

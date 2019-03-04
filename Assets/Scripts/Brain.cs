@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 public class Brain : MonoBehaviour
 {
@@ -34,10 +33,15 @@ public class Brain : MonoBehaviour
     Vector3 ILLEGALVECTOR = new Vector3(-999, -999, -999); // This is returned if no valid position is found for node
     public void Awake()
     {
-        if(instantiationDimension == null)
+        if (instantiationDimension == null)
         {
             instantiationDimension = new Vector3(10, 5, 10);
         }
+        origin = GetComponent<Transform>().position;
+    }
+    public void Start()
+    {
+        parts = GameObject.FindGameObjectWithTag("LegoBox").GetComponent<LegoBox>();
     }
 
     public void DeconstructBody()
@@ -88,8 +92,10 @@ public class Brain : MonoBehaviour
         // This next part splits the nodes into groups, then attempts to pair up two of those nodes in either group
         // once we successfully do this numberOfExtraConnections times (or 50 attempts) we jump out of the loop
         int count = 0;
-        while(count < numberOfExtraConnections || count > 50)
+        int loop = 0;
+        while(count < numberOfExtraConnections && loop < 10)
         {
+            loop++;
             int divider = Random.Range(1, nodes.Count - 1);
             if (GetValidConnectionToNode(nodes[Random.Range(0, divider)], nodes[Random.Range(divider, nodes.Count)]))
                 count++;
@@ -153,7 +159,7 @@ public class Brain : MonoBehaviour
             if (counter++ > 5)
                 return ILLEGALVECTOR;
 
-            target = new Vector3(Random.Range(0f, instantiationDimension.x), Random.Range(0f, instantiationDimension.y), Random.Range(0f, instantiationDimension.z));
+            target = origin + new Vector3(Random.Range(0f, instantiationDimension.x), Random.Range(0f, instantiationDimension.y), Random.Range(0f, instantiationDimension.z));
 
             if (!Physics.CheckSphere(origin+target, spaceBetween))
                 validFound = true;
