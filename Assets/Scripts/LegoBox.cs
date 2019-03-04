@@ -6,11 +6,17 @@ using UnityEngine;
 public class LegoBox : MonoBehaviour
 {
     [SerializeField]
+    int expectedNodeCount;
+    [SerializeField]
+    int expectedJointCount;
+    bool makeMoreNodes = true;
+    bool makeMoreJoints = true;
+
+    [SerializeField]
     GameObject nodePrefab = null;    
     List<GameObject> nodeBox;
     Vector3 nodeSpawnStart;
     int nodeCounter;
-
 
     [SerializeField]
     GameObject jointPrefab = null;
@@ -28,6 +34,22 @@ public class LegoBox : MonoBehaviour
         jointCounter = -1;
         jointSpawnStart = gameObject.GetComponent<Transform>().position + new Vector3(0, -3, 0);
         jointBox = new List<GameObject>();
+    }
+
+    public void FixedUpdate()
+    {
+        if (makeMoreNodes)
+        {
+            createMoreNodes();
+            if (nodeCounter > expectedNodeCount)
+                makeMoreNodes = false;
+        }
+        else if (makeMoreJoints)
+        {
+            CreateMoreJoints();
+            if (jointCounter > expectedJointCount)
+                makeMoreJoints = false;
+        }               
     }
 
     public GameObject getNode(Vector3 pos)
@@ -54,12 +76,24 @@ public class LegoBox : MonoBehaviour
     private void createMoreNodes()
     {
         nodeCounter++;
-        nodeBox.Add(Instantiate(nodePrefab, nodeSpawnStart, Quaternion.identity));
+        nodeBox.Add(Instantiate(nodePrefab, new Vector3(nodeCounter * 2, 0, 0) + nodeSpawnStart, Quaternion.identity));
+    }
+
+    public GameObject GetJoint(Vector3 pos)
+    {
+        if (jointCounter == -1)
+            CreateMoreJoints();
+        GameObject jointToSend = jointBox[jointCounter];
+        jointBox.RemoveAt(jointCounter);
+        jointCounter--;
+        jointToSend.GetComponent<Transform>().position = pos;
+
+        return jointToSend;
     }
 
     private void CreateMoreJoints()
     {
         jointCounter++;
-        jointBox.Add(Instantiate(jointPrefab, jointSpawnStart, Quaternion.identity));
+        jointBox.Add(Instantiate(jointPrefab, new Vector3(jointCounter * 2, 0, 0) + jointSpawnStart, Quaternion.identity));
     }
 }

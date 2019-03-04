@@ -4,32 +4,17 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    private Transform t;
-
-    float stringStrength;
-
     public Rigidbody rb;
-    HingeJoint hj;
-
-    SpringJoint[] springsList;
-
-    [SerializeField]
     FixedJoint fj;
+    Renderer myRender;
+    bool render;
 
-
-    Vector3 savedLocalPosition;
-    float spring;
-
-    // Start is called before the first frame update
     void Awake()
     {
-        t = GetComponent<Transform>();
-        springsList = GetComponents<SpringJoint>();
-        spring = springsList[0].spring;
+        render = false;
+        myRender = GetComponent<Renderer>();
         rb = GetComponent<Rigidbody>();
-        hj = GetComponent<HingeJoint>();
         fj = GetComponent<FixedJoint>();
-        savedLocalPosition = t.localPosition;
     }
     public void ConnectToNode(GameObject baseN)
     {
@@ -43,19 +28,9 @@ public class Base : MonoBehaviour
             fj.connectedBody = null;
         }
     }
-    public void ResetBase()
+    public void ToggleRenderer()
     {
-     //   fj.connectedBody = null;
-        foreach (SpringJoint sj in springsList)
-        {
-            sj.spring = spring;
-        }
-        rb.useGravity = false;
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-
-        t.localPosition = savedLocalPosition;
-        t.rotation = Quaternion.identity;
-
+        render = !render;
+        myRender.enabled = render;
     }
 }

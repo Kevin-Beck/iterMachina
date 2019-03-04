@@ -23,17 +23,9 @@ public class SlowMotion : MonoBehaviour
 
             if (Time.timeScale == 1.0f)
                 Time.timeScale = 0.0f;
-
             else
-
                 Time.timeScale = 1.0f;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
-
-        if(Input.GetKey("x"))
-        {
-            sc.TestBuilds();
-        }
-
     }
 }

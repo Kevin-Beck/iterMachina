@@ -20,6 +20,9 @@ public class Brain : MonoBehaviour
     int numberOfDesiredNodes = 0;
 
     [SerializeField]
+    int numberOfExtraConnections = 0;
+
+    [SerializeField]
     GameObject nodePrefab;
 
     [SerializeField]
@@ -36,27 +39,12 @@ public class Brain : MonoBehaviour
             instantiationDimension = new Vector3(10, 5, 10);
         }
     }
-    public void TestBuilds()
-    {
-        
-        int good = 0;
-        int bad = 0;
-        origin = transform.position;
 
-        if (ConstructNewRandomBody())
-            good++;
-        else
-            bad++;
-
-        DeconstructBody();
-        Debug.Log("Good: " + good + "  Bad: " + bad);
-    }
-    public void buildSingleBot()
-    {
-        ConstructNewRandomBody();
-    }
     public void DeconstructBody()
     {
+        ToggleAllMuscles();
+        ToggleAllRenderers();
+
         int num = joints.Count;
         for(int i = 0; i < num; i++)
         {
@@ -74,16 +62,17 @@ public class Brain : MonoBehaviour
     }
     public bool ConstructNewRandomBody() // returns false if body fails to be constructed
     {
+        // This loop attempts to create a body by creating a node in a valid location, then connecting it to an existing node
         for(int i = 0; i < numberOfDesiredNodes; i++)
         {
             Vector3 position = GetValidSpaceForNode();
             if (position == ILLEGALVECTOR)
                 return false;
             GameObject newlyCreatedNode = parts.getNode(position);
-            newlyCreatedNode.GetComponent<Rigidbody>().useGravity = true;
+            newlyCreatedNode.GetComponent<Rigidbody>().useGravity = true; // The new node must use gravity
             nodes.Add(newlyCreatedNode);
 
-            if (i != 0)
+            if (i != 0) // If this is the first node, we just let it exist, otherwise we need to connect it to something
             {
                 if (!GetValidConnectionToNode(newlyCreatedNode, nodes[Random.Range(0, i)]))
                 {                    
@@ -93,14 +82,39 @@ public class Brain : MonoBehaviour
                 }
             }
         }
+        // At this point we've created a bot that is an acyclic graph. in order to introduce the possibility of
+        // cyclic structures we throw on an additional attempt to build a few connections
+
+        // This next part splits the nodes into groups, then attempts to pair up two of those nodes in either group
+        // once we successfully do this numberOfExtraConnections times (or 50 attempts) we jump out of the loop
+        int count = 0;
+        while(count < numberOfExtraConnections || count > 50)
+        {
+            int divider = Random.Range(1, nodes.Count - 1);
+            if (GetValidConnectionToNode(nodes[Random.Range(0, divider)], nodes[Random.Range(divider, nodes.Count)]))
+                count++;
+        }
         return true;
     }
+
+    public void MakeBody()
+    {
+        ConstructNewRandomBody();
+        ToggleAllMuscles();
+        ToggleAllRenderers();
+    }
+
     public void ToggleAllMuscles ()
     {
-        foreach(GameObject gm in joints)
-        {
+        foreach (GameObject gm in joints)
             gm.GetComponent<JointScript>().ToggleMuscle();
-        }
+    }
+    public void ToggleAllRenderers()
+    {
+        foreach (GameObject joint in joints)
+            joint.GetComponent<JointScript>().ToggleRenderer();
+        foreach (GameObject node in nodes)
+            node.GetComponent<NodeScript>().ToggleRenderer();
     }
     public void ConstructBodyFromGene()
     {
@@ -108,11 +122,6 @@ public class Brain : MonoBehaviour
     }
     private bool GetValidConnectionToNode(GameObject newNode, GameObject oldNode)
     {
-        // returns true if a valid connection is constructed
-        // adds the connected object to both nodes
-
-        // get direction vector between the two nodes
-
         Vector3 vector = (newNode.transform.position - oldNode.transform.position);
         if (vector.magnitude < 3.1f) 
             return false;
@@ -124,7 +133,7 @@ public class Brain : MonoBehaviour
         if (rch.Length > 0)
             return false;
 
-        GameObject newlyCreatedJoint = Instantiate(jointPrefab, oldNode.transform.position + vector.normalized * .9f, Quaternion.identity);
+        GameObject newlyCreatedJoint = parts.GetJoint(oldNode.transform.position + vector.normalized * .9f);
         joints.Add(newlyCreatedJoint);
         newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
 
@@ -132,7 +141,6 @@ public class Brain : MonoBehaviour
         newlyCreatedJoint.GetComponent<JointScript>().ConnectBaseToNode(oldNode);
         newlyCreatedJoint.GetComponent<JointScript>().ConnectEdgeToNode(newNode);
         return true;
-
     }
     private Vector3 GetValidSpaceForNode() {
         bool validFound = false;

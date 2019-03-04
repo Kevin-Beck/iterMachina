@@ -27,12 +27,14 @@ public class JointScript : MonoBehaviour
     private float C;
 
     private bool musclesOn;
+    private bool renderersOn;
 
     private float initSpring;
     // Start is called before the first frame update
     void Awake()
     {
         musclesOn = false;
+        renderersOn = false;
         A = Random.Range(0f, 5f);
         B = Random.Range(0f, 3.2f);
         C = Random.Range(-1.8f, 1.8f);
@@ -50,6 +52,17 @@ public class JointScript : MonoBehaviour
     {
         musclesOn = !musclesOn;
     }
+    public void ToggleRenderer()
+    {
+        renderersOn = !renderersOn;
+        if(renderersOn)
+        {
+            edgeScript.ToggleRenderer();
+            baseScript.ToggleRenderer();
+            boneScript.ToggleRenderer();
+            jointRender.enabled = true;
+        }
+    }
     public void UpdateMuscles(float val)
     {
         posMuscle.spring = initSpring + val*initSpring;
@@ -57,7 +70,7 @@ public class JointScript : MonoBehaviour
         UpdateJointRender(val);
         //rb.WakeUp();
     }
-
+    
     private void UpdateJointRender(float col)
     {
         float x = (col + 1) / 2;
@@ -74,15 +87,5 @@ public class JointScript : MonoBehaviour
     public void ConnectEdgeToNode(GameObject edgeNode)
     {
         edgeScript.ConnectToNode(edgeNode);
-    }
-    public void Reset()
-    {
-
-        boneScript.ResetBone();
-        baseScript.ConnectToNode(edgeScript.gameObject);
-        edgeScript.ConnectToNode(baseScript.gameObject);
-        baseScript.ResetBase();
-        edgeScript.ResetEdge();
-        Physics.SyncTransforms();
     }
 }

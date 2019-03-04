@@ -6,17 +6,15 @@ public class Edge : MonoBehaviour
 {
     FixedJoint fj;
     public Rigidbody rb;
-    Transform t;
-    Vector3 localPosition;
-    Quaternion localRotation;
-    // Start is called before the first frame update
+    Renderer myRender;
+    bool render;
+
     void Awake()
     {
+        render = false;
+        myRender = GetComponent<Renderer>();
         fj = GetComponent<FixedJoint>();
-        t = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
-
-        localPosition = t.localPosition;
     }
     public void ConnectToNode(GameObject edgeN)
     {
@@ -30,16 +28,9 @@ public class Edge : MonoBehaviour
             fj.connectedBody = null;
         }
     }
-    public void ResetEdge()
+    public void ToggleRenderer()
     {
-
-     //   fj.connectedBody = null;
-
-        rb.useGravity = false;
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        t.localRotation = Quaternion.identity;
-        t.localPosition = localPosition;
-
+        render = !render;
+        myRender.enabled = render;
     }
 }
