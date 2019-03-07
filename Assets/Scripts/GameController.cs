@@ -7,12 +7,12 @@ using System.Linq;
 public class GameController : MonoBehaviour
 {
     [SerializeField]
-    int numberPerRow;
+    int numberPerRow = 0;
 
     List<GameObject> generation;
 
     [SerializeField]
-    GameObject brainPrefab;
+    GameObject brainPrefab = null;
 
     public void Awake()
     {
@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
-    public void GeneratePopulation()
+    public void GenerateRandomPopulation()
     {
         if(!generation.Any())
         {
@@ -34,9 +34,15 @@ public class GameController : MonoBehaviour
         }else
         {
             foreach (GameObject brainObject in generation)
-                brainObject.GetComponent<Brain>().MakeBody();
+                brainObject.GetComponent<Brain>().MakeRandomBody();
         }
 
+    }
+    public void GeneratePopulationFromPositionOne()
+    {
+        CopyBestDNAFromBrains();
+        foreach (GameObject brainObject in generation)
+            brainObject.GetComponent<Brain>().MakeDNABody();
     }
     public void DeconstructPopulation()
     {
@@ -54,6 +60,14 @@ public class GameController : MonoBehaviour
     {
         foreach (GameObject brainObject in generation)
             brainObject.GetComponent<Brain>().ToggleAllMuscles();
+    }
+    public void CopyBestDNAFromBrains()
+    {
+        DNA best = generation.ElementAt(0).GetComponent<Brain>().GetDNA();
+        for (int i = 0; i < generation.Count; i++)
+        {
+            generation.ElementAt(i).GetComponent<Brain>().SetDNA(best);
+        }
     }
 
 }

@@ -5,17 +5,15 @@ using UnityEngine;
 public class Instruction
 {
     public Instruction() { }
-    public Instruction(int baseN, int targetN, int rot, float A, float B, float C) {
+    public Instruction(int baseN, int targetN, Vector3 sine) {
         baseNode = baseN;
         targetNode = targetN;
-        rotation = rot; // 0-180
-        sineA = A;
-        sineB = B;
-        sineC = C;
+        sineA = sine.x;
+        sineB = sine.y;
+        sineC = sine.z;
     }
-    int baseNode; // The starting node
-    int targetNode; // the target node
-    int rotation; // angle the joint is turned
+    public int baseNode; // The starting node
+    public int targetNode; // the target node
 
     // Within the joint is a controller that runs off of the equation
     // sin(A*sin(Bx)+C) These factors are created as part of the instruction set
@@ -23,12 +21,16 @@ public class Instruction
     float sineB;
     float sineC;
     // To gene is used internally by the Brain for construction
+    public Vector3 GetSineFactors()
+    {
+        return new Vector3(sineA, sineB, sineC);
+    }
+
     public string toGene()
     {
         return "" +
             baseNode.ToString() + " " +
             targetNode.ToString() + " " +
-            rotation.ToString() + " " +
             sineA.ToString() + " " +
             sineB.ToString() + " " +
             sineC.ToString();
@@ -42,7 +44,6 @@ public class Instruction
         return "" +
             baseNode.ToString() + ", " +
             targetNode.ToString() + ", " +
-            rotation.ToString() + ", " +
             sineA.ToString() + ", " +
             sineB.ToString() + ", " +
             sineC.ToString() + "";

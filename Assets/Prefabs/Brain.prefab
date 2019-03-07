@@ -46,8 +46,8 @@ MonoBehaviour:
   parts: {fileID: 0}
   instantiationDimension: {x: 10, y: 5, z: 10}
   spaceBetween: 1.5
-  numberOfDesiredNodes: 8
-  numberOfExtraConnections: 2
+  numberOfDesiredNodes: 5
+  numberOfExtraConnections: 1
   nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
     type: 3}
   jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,

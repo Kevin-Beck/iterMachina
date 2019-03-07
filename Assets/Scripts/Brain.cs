@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Brain : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class Brain : MonoBehaviour
 
     [SerializeField]
     Vector3 instantiationDimension;
-
+     
     [SerializeField]
     float spaceBetween = 0;
 
@@ -30,18 +31,23 @@ public class Brain : MonoBehaviour
     List<GameObject> nodes = new List<GameObject>();
     List<GameObject> joints = new List<GameObject>();
 
+    DNA myDNA;
+
     Vector3 ILLEGALVECTOR = new Vector3(-999, -999, -999); // This is returned if no valid position is found for node
+
     public void Awake()
     {
+        myDNA = new DNA();
         if (instantiationDimension == null)
-        {
             instantiationDimension = new Vector3(10, 5, 10);
-        }
-        origin = GetComponent<Transform>().position;
+        
+        origin = transform.position;
     }
+
     public void Start()
     {
         parts = GameObject.FindGameObjectWithTag("LegoBox").GetComponent<LegoBox>();
+        
     }
 
     public void DeconstructBody()
@@ -52,20 +58,23 @@ public class Brain : MonoBehaviour
         int num = joints.Count;
         for(int i = 0; i < num; i++)
         {
-            GameObject.Destroy(joints[0]);
-            joints.Remove(joints[0]);
+            Destroy(joints[i]);
             Physics.SyncTransforms();
         }
+        joints.Clear();
 
         int val = nodes.Count;
         for (int j = 0; j < val; j++)
         {
-            parts.returnNode(nodes[0]);
-            nodes.Remove(nodes[0]);
+            parts.returnNode(nodes[j]);
         }
+        nodes.Clear();
     }
     public bool ConstructNewRandomBody() // returns false if body fails to be constructed
     {
+        myDNA.ClearDNA(); // making a new random body, gotta clear out old data in DNA
+        nodes.Clear();
+        joints.Clear();
         // This loop attempts to create a body by creating a node in a valid location, then connecting it to an existing node
         for(int i = 0; i < numberOfDesiredNodes; i++)
         {
@@ -75,16 +84,19 @@ public class Brain : MonoBehaviour
             GameObject newlyCreatedNode = parts.getNode(position);
             newlyCreatedNode.GetComponent<Rigidbody>().useGravity = true; // The new node must use gravity
             nodes.Add(newlyCreatedNode);
+           
 
             if (i != 0) // If this is the first node, we just let it exist, otherwise we need to connect it to something
             {
-                if (!GetValidConnectionToNode(newlyCreatedNode, nodes[Random.Range(0, i)]))
+                if (!GetValidConnectionToNode(nodes.Count - 1, Random.Range(0, i)))
                 {                    
                     parts.returnNode(newlyCreatedNode);
                     nodes.Remove(newlyCreatedNode);                    
                     i--;
-                }
-            }
+                }else
+                    myDNA.AddToPositions(newlyCreatedNode.transform.position - origin); // This position is added in
+            }else
+                myDNA.AddToPositions(newlyCreatedNode.transform.position - origin);
         }
         // At this point we've created a bot that is an acyclic graph. in order to introduce the possibility of
         // cyclic structures we throw on an additional attempt to build a few connections
@@ -96,20 +108,35 @@ public class Brain : MonoBehaviour
         while(count < numberOfExtraConnections && loop < 10)
         {
             loop++;
-            int divider = Random.Range(1, nodes.Count - 1);
-            if (GetValidConnectionToNode(nodes[Random.Range(0, divider)], nodes[Random.Range(divider, nodes.Count)]))
+            int divider = Random.Range(1, nodes.Count-1);
+            if (GetValidConnectionToNode(Random.Range(0, divider), Random.Range(divider, nodes.Count)))
                 count++;
         }
         return true;
     }
 
-    public void MakeBody()
+    public void SetDNA(DNA newDNA)
+    {
+        myDNA = newDNA;
+    }
+    public DNA GetDNA()
+    {
+        return myDNA;
+    }
+    /**********************************************/
+    public void MakeRandomBody()
     {
         ConstructNewRandomBody();
         ToggleAllMuscles();
         ToggleAllRenderers();
     }
-
+    public void MakeDNABody()
+    {
+        ConstructBodyFromDNA();
+        ToggleAllMuscles();
+        ToggleAllRenderers();
+    }
+    /**************************************************/
     public void ToggleAllMuscles ()
     {
         foreach (GameObject gm in joints)
@@ -122,12 +149,36 @@ public class Brain : MonoBehaviour
         foreach (GameObject node in nodes)
             node.GetComponent<NodeScript>().ToggleRenderer();
     }
-    public void ConstructBodyFromGene()
+    public void ConstructBodyFromDNA()
     {
+        nodes.Clear();
+        joints.Clear();
+        for(int i = 0; i < myDNA.nodePositions.Count; i++)
+            nodes.Add(Instantiate(nodePrefab, myDNA.nodePositions[i] + origin, Quaternion.identity));
 
+        for(int i = 0; i < myDNA.designInstructions.Count; i++)
+        {
+            GameObject newNode = nodes.ElementAt(myDNA.designInstructions[i].targetNode);
+            GameObject oldNode = nodes.ElementAt(myDNA.designInstructions[i].baseNode);
+
+            Physics.SyncTransforms();
+
+            Vector3 vector = (newNode.transform.position - oldNode.transform.position);
+            GameObject newlyCreatedJoint = parts.GetJoint(oldNode.transform.position + vector.normalized * .9f);
+            joints.Add(newlyCreatedJoint);
+            newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
+            JointScript js = newlyCreatedJoint.GetComponent<JointScript>();
+            js.SetBoneSize(vector.magnitude - 2.5f);
+            js.ConnectBaseToNode(oldNode);
+            js.ConnectEdgeToNode(newNode);
+            js.SetSineFactors(myDNA.designInstructions[i].GetSineFactors());
+        }
     }
-    private bool GetValidConnectionToNode(GameObject newNode, GameObject oldNode)
+    private bool GetValidConnectionToNode(int a, int b)
     {
+        GameObject newNode = nodes[a];
+        GameObject oldNode = nodes[b];
+
         Vector3 vector = (newNode.transform.position - oldNode.transform.position);
         if (vector.magnitude < 3.1f) 
             return false;
@@ -143,9 +194,13 @@ public class Brain : MonoBehaviour
         joints.Add(newlyCreatedJoint);
         newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
 
-        newlyCreatedJoint.GetComponent<JointScript>().SetBoneSize(vector.magnitude - 2.5f);
-        newlyCreatedJoint.GetComponent<JointScript>().ConnectBaseToNode(oldNode);
-        newlyCreatedJoint.GetComponent<JointScript>().ConnectEdgeToNode(newNode);
+        JointScript js = newlyCreatedJoint.GetComponent<JointScript>();
+        js.SetBoneSize(vector.magnitude - 2.5f);
+        js.ConnectBaseToNode(oldNode);
+        js.ConnectEdgeToNode(newNode);
+        js.SetSineFactors(new Vector3(Random.Range(0f, 5f), Random.Range(0f, 3.2f), Random.Range(-1.8f, 1.8f)));
+
+        myDNA.AddToInstructions(new Instruction(b, a, js.GetSineFactors()));
         return true;
     }
     private Vector3 GetValidSpaceForNode() {

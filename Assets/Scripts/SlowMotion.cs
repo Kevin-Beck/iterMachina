@@ -11,6 +11,7 @@ public class SlowMotion : MonoBehaviour
         if (Input.GetKeyDown("x"))
         {
             Time.timeScale = 2 * Time.timeScale;
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
         if (Input.GetKeyDown("z"))
         {

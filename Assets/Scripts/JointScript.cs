@@ -35,9 +35,6 @@ public class JointScript : MonoBehaviour
     {
         musclesOn = false;
         renderersOn = false;
-        A = Random.Range(0f, 5f);
-        B = Random.Range(0f, 3.2f);
-        C = Random.Range(-1.8f, 1.8f);
 
         initSpring = posMuscle.spring;
     }
@@ -48,6 +45,13 @@ public class JointScript : MonoBehaviour
             UpdateMuscles(Mathf.Sin(A * Mathf.Cos(B * Time.fixedTime) + C));
         }
     }
+    public void SetSineFactors(Vector3 v)
+    {
+        A = v.x;
+        B = v.y;
+        C = v.z;
+    }
+
     public void ToggleMuscle()
     {
         musclesOn = !musclesOn;
@@ -70,7 +74,10 @@ public class JointScript : MonoBehaviour
         UpdateJointRender(val);
         //rb.WakeUp();
     }
-    
+    public Vector3 GetSineFactors()
+    {
+        return new Vector3(A, B, C);
+    }
     private void UpdateJointRender(float col)
     {
         float x = (col + 1) / 2;

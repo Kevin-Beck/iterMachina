@@ -5,9 +5,14 @@ using System.Text;
 
 public class DNA
 {
-    List<Vector3> nodePositions;
-    List<Instruction> designInstructions;
+    public List<Vector3> nodePositions;
+    public List<Instruction> designInstructions;
 
+    public DNA()
+    {
+        nodePositions = new List<Vector3>();
+        designInstructions = new List<Instruction>();
+    }
     public void Awake()
     {
         nodePositions = new List<Vector3>();
@@ -30,5 +35,25 @@ public class DNA
         sb.Append(nodePositions.Count + ", ");
         sb.Append(designInstructions.Count);
         return sb.ToString();
+    }
+    public void mutateDNA()
+    {
+        foreach(Instruction di in designInstructions)
+        {
+           
+        }
+    }
+    public void ClearDNA()
+    {
+        nodePositions.Clear();
+        designInstructions.Clear();
+    }
+    public void AddToPositions(Vector3 position)
+    {
+        nodePositions.Add(position);
+    }
+    public void AddToInstructions(Instruction x)
+    {
+        designInstructions.Add(x);
     }
 }

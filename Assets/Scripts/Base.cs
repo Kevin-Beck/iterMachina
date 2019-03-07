@@ -32,5 +32,5 @@ public class Base : MonoBehaviour
     {
         render = !render;
         myRender.enabled = render;
-    }
+    }    
 }

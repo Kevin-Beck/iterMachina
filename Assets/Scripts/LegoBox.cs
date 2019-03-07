@@ -6,11 +6,11 @@ using UnityEngine;
 public class LegoBox : MonoBehaviour
 {
     [SerializeField]
-    int expectedNodeCount;
+    int expectedNodeCount = 0;
     [SerializeField]
-    int expectedJointCount;
-    bool makeMoreNodes = true;
-    bool makeMoreJoints = true;
+    int expectedJointCount = 0;
+    bool makeMoreNodes = false;
+    bool makeMoreJoints = false;
 
     [SerializeField]
     GameObject nodePrefab = null;    
@@ -48,8 +48,12 @@ public class LegoBox : MonoBehaviour
         {
             CreateMoreJoints();
             if (jointCounter > expectedJointCount)
+            {
+                GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>().setFinish();
                 makeMoreJoints = false;
-        }               
+            }
+        }
+            
     }
 
     public GameObject getNode(Vector3 pos)
