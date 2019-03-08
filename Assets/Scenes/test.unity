@@ -778,11 +778,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceBetweenInstantiations: 25
-  numberPerRow: 5
+  numberPerRow: 13
   generationNumber: 0
   areaForInstantiation: {x: 10, y: 5, z: 10}
-  numberOfNodes: 8
-  additionalConnections: 2
+  numberOfNodes: 6
+  additionalConnections: 3
+  mutationChance: 0.25
   brainPrefab: {fileID: 3334053556957822947, guid: d8c0562d47e373c46970d94ed2500528,
     type: 3}
   nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
@@ -1206,6 +1207,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 5220343250759851388, guid: e4dfc812a6159a4458b1132ad7e5fc73,
     type: 3}
   timer: {fileID: 2105402504}
+  genText: {fileID: 0}
 --- !u!1 &1208198816
 GameObject:
   m_ObjectHideFlags: 0
@@ -1691,7 +1693,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1188163468}
   m_HandleRect: {fileID: 1188163467}
   m_Direction: 2
-  m_Value: 0.00000002192161
+  m_Value: 0
   m_Size: 0.02386192
   m_NumberOfSteps: 0
   m_OnValueChanged:

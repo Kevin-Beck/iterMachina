@@ -25,7 +25,12 @@ public class Instruction
     {
         return new Vector3(sineA, sineB, sineC);
     }
-
+    public void SetSineFactors(Vector3 value)
+    {
+        sineA = value.x;
+        sineB = value.y;
+        sineC = value.z;
+    }
     public string toGene()
     {
         return "" +

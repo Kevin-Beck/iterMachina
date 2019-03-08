@@ -39,6 +39,10 @@ public class LegoBox : MonoBehaviour
     public void Start()
     {
         ui = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
+        for (int i = 0; i < 400; i++)
+            createMoreNodes();
+        for (int i = 0; i < 400; i++)
+            CreateMoreJoints();
     }
 
     public void FixedUpdate()

@@ -5,9 +5,9 @@ using System.Linq;
 
 public class Brain : MonoBehaviour
 {
-
     LegoBox legoBox = null; // This is the parts store that will deliver nodes and joints. Found in Start
     UIController userInterface = null; // This is the interface with the GUI. Found in Start
+
     GameData gameData = null; // A psuedo database for intial data consolidation
     Vector3 origin; // the original position of this brain
     
@@ -20,6 +20,8 @@ public class Brain : MonoBehaviour
     int numberOfDesiredNodes = 0;
     const int MAX_NODES = 15;
     int numberOfExtraConnections = 0;
+
+    float mutationChance = 0;
 
     List<GameObject> nodes;
     List<GameObject> joints;
@@ -50,6 +52,7 @@ public class Brain : MonoBehaviour
         instantiationDimension = gameData.areaForInstantiation;
         numberOfDesiredNodes = gameData.numberOfNodes;
         numberOfExtraConnections = gameData.additionalConnections;
+        mutationChance = gameData.mutationChance;
     }
     public void SetInstantiationDimension(Vector3 newDimension)
     {
@@ -71,6 +74,14 @@ public class Brain : MonoBehaviour
     {
         if(newNum > 0 && newNum < MAX_NODES)
             numberOfDesiredNodes = newNum;
+    }
+
+    public float CalculateCurrentScore()
+    {
+        float Xmagnitude = 0;
+        for(int i = 0; i < nodes.Count; i++)
+            Xmagnitude += (nodes[0].transform.position.x - myDNA.nodePositions[0].x+origin.x);        
+        return Xmagnitude;
     }
     public void DeconstructBody()
     {
@@ -98,8 +109,6 @@ public class Brain : MonoBehaviour
         nodes.Clear();
         joints.Clear();
         // This loop attempts to create a body by creating a node in a valid location, then connecting it to an existing node
-
-
         for (int i = 0; i < numberOfDesiredNodes; i++)
         {
             Vector3 position = GetValidSpaceForNode();
@@ -107,8 +116,7 @@ public class Brain : MonoBehaviour
                 return false;
             GameObject newlyCreatedNode = legoBox.getNode(position);
             newlyCreatedNode.GetComponent<Rigidbody>().useGravity = true; // The new node must use gravity
-            nodes.Add(newlyCreatedNode);
-           
+            nodes.Add(newlyCreatedNode);           
 
             if (i != 0) // If this is the first node, we just let it exist, otherwise we need to connect it to something
             {
@@ -160,6 +168,12 @@ public class Brain : MonoBehaviour
         ToggleAllMuscles();
         ToggleAllRenderers();
     }
+    public void MakeMutatedDNABody()
+    {
+        ConstructMutatedBodyFromDNA();
+        ToggleAllMuscles();
+        ToggleAllRenderers();
+    }
     /**************************************************/
     public void ToggleAllMuscles ()
     {
@@ -173,14 +187,20 @@ public class Brain : MonoBehaviour
         foreach (GameObject node in nodes)
             node.GetComponent<NodeScript>().ToggleRenderer();
     }
+    public void MutateJoints()
+    {
+        foreach(GameObject joint in joints)
+        {
+            if (Random.Range(0f, 1f) > (1 - mutationChance))
+                joint.GetComponent<JointScript>().SetSineFactors(GetRandomSineFactors());
+        }
+    }
     public void ConstructBodyFromDNA()
     {
-        nodes.Clear();
-        joints.Clear();
-        for(int i = 0; i < myDNA.nodePositions.Count; i++)
-            nodes.Add(legoBox.getNode(myDNA.nodePositions[i]+origin));
+        for (int i = 0; i < myDNA.nodePositions.Count; i++)
+            nodes.Add(legoBox.getNode(myDNA.nodePositions[i] + origin));
 
-        for(int i = 0; i < myDNA.designInstructions.Count; i++)
+        for (int i = 0; i < myDNA.designInstructions.Count; i++)
         {
             GameObject newNode = nodes.ElementAt(myDNA.designInstructions[i].targetNode);
             GameObject oldNode = nodes.ElementAt(myDNA.designInstructions[i].baseNode);
@@ -195,6 +215,34 @@ public class Brain : MonoBehaviour
             js.SetBoneSize(vector.magnitude - 2.5f);
             js.ConnectBaseToNode(oldNode);
             js.ConnectEdgeToNode(newNode);
+            js.SetSineFactors(myDNA.designInstructions[i].GetSineFactors());
+        }
+    }
+    public void ConstructMutatedBodyFromDNA()
+    {
+        for(int i = 0; i < myDNA.nodePositions.Count; i++)
+            nodes.Add(legoBox.getNode(myDNA.nodePositions[i]+origin));
+
+        for(int i = 0; i < myDNA.designInstructions.Count; i++)
+        {
+            GameObject newNode = nodes.ElementAt(myDNA.designInstructions[i].targetNode);
+            GameObject oldNode = nodes.ElementAt(myDNA.designInstructions[i].baseNode);
+
+            Physics.SyncTransforms();
+
+            Vector3 vector = (newNode.transform.position - oldNode.transform.position);
+            GameObject newlyCreatedJoint = legoBox.GetJoint(oldNode.transform.position + vector.normalized * .9f);
+            joints.Add(newlyCreatedJoint);
+            newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
+
+            JointScript js = newlyCreatedJoint.GetComponent<JointScript>();
+            js.SetBoneSize(vector.magnitude - 2.5f);
+            js.ConnectBaseToNode(oldNode);
+            js.ConnectEdgeToNode(newNode);
+
+            if (mutationChance > Random.Range(0f, 1))
+                myDNA.designInstructions[i].SetSineFactors(GetRandomSineFactors());
+
             js.SetSineFactors(myDNA.designInstructions[i].GetSineFactors());
         }
     }
@@ -222,10 +270,14 @@ public class Brain : MonoBehaviour
         js.SetBoneSize(vector.magnitude - 2.5f);
         js.ConnectBaseToNode(oldNode);
         js.ConnectEdgeToNode(newNode);
-        js.SetSineFactors(new Vector3(Random.Range(0f, 5f), Random.Range(0f, 3.2f), Random.Range(-1.8f, 1.8f)));
+        js.SetSineFactors(GetRandomSineFactors());
 
         myDNA.AddToInstructions(new Instruction(b, a, js.GetSineFactors()));
         return true;
+    }
+    public Vector3 GetRandomSineFactors()
+    {
+        return new Vector3(Random.Range(0f, 5f), Random.Range(0f, 3.2f), Random.Range(-1.8f, 1.8f));
     }
     private Vector3 GetValidSpaceForNode() {
         bool validFound = false;

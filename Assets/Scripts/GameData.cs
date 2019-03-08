@@ -22,6 +22,8 @@ public class GameData : MonoBehaviour
     [SerializeField]
     public int additionalConnections = 0;
     [Space(10)]
+    [SerializeField]
+    public float mutationChance = 0.0f;
 
     [Header("Prefabs")]
     [SerializeField]
@@ -35,22 +37,8 @@ public class GameData : MonoBehaviour
     [SerializeField]
     UIController ui;
 
-
-
-    public void Awake()
-    {
-        
-    }
-
     public void Start() // Get Connections to relevant controllers
     {
         ui = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
-    }
-    
-
-
-    void Update()
-    {
-
-    }
+    }    
 }

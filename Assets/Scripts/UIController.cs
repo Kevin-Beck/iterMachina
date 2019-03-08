@@ -16,6 +16,7 @@ public class UIController : MonoBehaviour
         
     // Other Controller Objects
     PopulationController pc;
+    GameData gd;
 
     // UI prefabs
     [SerializeField]
@@ -26,6 +27,8 @@ public class UIController : MonoBehaviour
     Text timer = null;
     float startTime;
     bool finished;
+    [SerializeField]
+    Text genText = null;
 
     //Panels used, each panel gets its buttons added in dynamically using the dictionaries 
     GameObject mainPanel;
@@ -40,7 +43,7 @@ public class UIController : MonoBehaviour
     bool DebugIsOn;
     GameObject dataLogPanel;
     Text DataLog = null;
-
+    
     // Settings Menu
     GameObject settingsPanel;
 
@@ -58,9 +61,10 @@ public class UIController : MonoBehaviour
         // Load up the main Panel buttons and apply functionality, resize mainPanel to fit
         ConfigureMainPanel();
        
+        // TODO make a secondary panel like the main one
 
-
-
+        // TODO add the click to the settings menu to make it disappear
+        // TODO also make the settings menu work like the Main Panel too cause its good
     }
     private void FindAllRelevantGameObjects()
     {
@@ -69,6 +73,7 @@ public class UIController : MonoBehaviour
         DataLog = GameObject.FindGameObjectWithTag("DataLog").GetComponent<Text>();
         dataLogPanel = GameObject.FindGameObjectWithTag("DataLogPanel");
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
+        gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
 
         // disable all hidden elements
         dataLogPanel.SetActive(false);
@@ -79,11 +84,16 @@ public class UIController : MonoBehaviour
     {
         Dictionary<string, UnityAction> mainPanelButtonActions = new Dictionary<string, UnityAction>
         {
-            { "Settings Menu", () =>  ToggleShowSettingsMenu() },
-            { "Build Random Gen", () => pc.GenerateRandomPopulation() },
-            { "Destroy All Bots", () => pc.DeconstructPopulation() },
             { "Turn Off Muscles", () => pc.ToggleAllMuscles() },
-            { "Sarah", () => pc.ToggleAllRenders() }
+            { "Settings Menu", () =>  ToggleShowSettingsMenu() },
+            { "6 Construct from 1", () => pc.GeneratePopulationFromBestDNA() },
+            { "5 Copy Best DNA", () => pc.CopyBestDNAFromBrains() },
+            { "4 Destroy All Bots", () => pc.DeconstructPopulation() },
+            { "3 Score All", () => pc.CalculateAllScores() },
+            { "2 Build a Random Gen", () => pc.GenerateRandomPopulation() },
+            { "1 Inialize Brains", () => pc.GenerateBrains() },
+            { "Loop It", () => pc.TEMPLOOP3456() }
+
         };
 
         // Create a button and parent it to Main Panel for each buttonAction
@@ -116,6 +126,14 @@ public class UIController : MonoBehaviour
             float guiTime = Time.time - startTime;
             timer.text = "Time: " + guiTime;
         }
+    }
+    public void ResetTimer()
+    {
+        startTime = Time.time;
+    }
+    public void UpdateGen()
+    {
+        genText.text = "Generation: " + gd.generationNumber;
     }
     public void setFinish()
     {

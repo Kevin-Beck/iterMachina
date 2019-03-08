@@ -19,6 +19,12 @@ public class PopulationController : MonoBehaviour
     UIController userInterface;
     GameData gameData;
 
+    float timerMax = 10;
+    float timer = -5;
+
+    DNA currentBestDNA;
+    float maxBestScore;
+
     public void Awake()
     {
         generation = new List<Brain>();
@@ -32,32 +38,63 @@ public class PopulationController : MonoBehaviour
         numberPerRow = gameData.numberPerRow;
         generationNumber = gameData.generationNumber;
         brainPrefab = gameData.brainPrefab;
+        maxBestScore = 0;
     }
+    public void TEMPLOOP3456()
+    {
+        CalculateAllScores();
+        DeconstructPopulation();
+        CopyBestDNAFromBrains();
+        GeneratePopulationFromBestDNA();
+    }
+    public void FixedUpdate()
+    {
 
+    }
     public void GenerateRandomPopulation()
     {
-        if(!generation.Any())
-            GenerateBrains();
-
-        Debug.Log(generation.Count);
-
         foreach (Brain bs in generation)
             bs.MakeRandomBody();
     }
 
     public void GenerateBrains()
     {
-        for (int i = 0; i < numberPerRow; i++)
+        numberPerRow = gameData.numberPerRow;
+        if(generation.Count!= numberPerRow*numberPerRow)
         {
-            for (int j = 0; j < numberPerRow; j++)
-                generation.Add(Instantiate(brainPrefab, new Vector3(i * distanceBetweenInstantiations, 0, j * distanceBetweenInstantiations), Quaternion.identity).GetComponent<Brain>());
+            foreach (Brain bs in generation)
+                Destroy(bs.gameObject);
+            generation.Clear();
+
+            for (int i = 0; i < numberPerRow; i++)
+            {
+                for (int j = 0; j < numberPerRow; j++)
+                    generation.Add(Instantiate(brainPrefab, new Vector3(i * distanceBetweenInstantiations, 0, j * distanceBetweenInstantiations), Quaternion.identity).GetComponent<Brain>());
+            }
         }
     }
-    public void GeneratePopulationFromPositionOne()
+    public void GeneratePopulationFromBestDNA()
     {
-        CopyBestDNAFromBrains();
+        for(int i = 0; i < generation.Count; i++)
+        {
+            if (i == 0)
+                generation.ElementAt(0).MakeDNABody();
+            else
+                generation.ElementAt(i).MakeMutatedDNABody();
+        }
+    }
+    public void CalculateAllScores()
+    {
         foreach (Brain bs in generation)
-            bs.MakeDNABody();
+        {
+            float curScore = bs.CalculateCurrentScore();
+            if (curScore > maxBestScore)
+            {
+                maxBestScore = curScore;
+                currentBestDNA = bs.GetDNA();
+                Debug.Log("best: " + maxBestScore);
+            }
+        }
     }
     public void DeconstructPopulation()
     {
@@ -76,11 +113,7 @@ public class PopulationController : MonoBehaviour
     }
     public void CopyBestDNAFromBrains()
     {
-        DNA best = generation.ElementAt(0).GetDNA();
         for (int i = 0; i < generation.Count; i++)
-        {
-            generation.ElementAt(i).SetDNA(best);
-        }
+            generation.ElementAt(i).SetDNA(currentBestDNA);
     }
-
 }
