@@ -5,24 +5,19 @@ using UnityEngine;
 
 public class LegoBox : MonoBehaviour
 {
-    [SerializeField]
-    int expectedNodeCount = 0;
-    [SerializeField]
-    int expectedJointCount = 0;
-    bool makeMoreNodes = false;
-    bool makeMoreJoints = false;
-
-    [SerializeField]
     GameObject nodePrefab = null;    
     List<GameObject> nodeBox;
     Vector3 nodeSpawnStart;
     int nodeCounter;
-
-    [SerializeField]
+    
     GameObject jointPrefab = null;
     List<GameObject> jointBox;
     Vector3 jointSpawnStart;
     int jointCounter;
+
+    // Connections
+    UIController ui;
+    GameData gd;
 
 
     public void Awake()
@@ -34,25 +29,20 @@ public class LegoBox : MonoBehaviour
         jointCounter = -1;
         jointSpawnStart = gameObject.GetComponent<Transform>().position + new Vector3(0, -3, 0);
         jointBox = new List<GameObject>();
+
+        gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+
+
+        jointPrefab = gd.jointPrefab;
+        nodePrefab = gd.nodePrefab;
+    }
+    public void Start()
+    {
+        ui = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
     }
 
     public void FixedUpdate()
     {
-        if (makeMoreNodes)
-        {
-            createMoreNodes();
-            if (nodeCounter > expectedNodeCount)
-                makeMoreNodes = false;
-        }
-        else if (makeMoreJoints)
-        {
-            CreateMoreJoints();
-            if (jointCounter > expectedJointCount)
-            {
-                GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>().setFinish();
-                makeMoreJoints = false;
-            }
-        }
             
     }
 

@@ -8,6 +8,12 @@ TagManager:
   - BaseOfJoint
   - LegoBox
   - UIController
+  - PopulationController
+  - DataLog
+  - MainButtonPanel
+  - SettingsPanel
+  - DataLogPanel
+  - GameData
   layers:
   - Default
   - TransparentFX
