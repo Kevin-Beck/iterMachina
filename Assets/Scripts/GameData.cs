@@ -4,47 +4,49 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-
+    [Header("Positions Of Spawners")]
+    [SerializeField]
+    public Vector3 NodeSpawnerPosition;
+    public float nodeSpawnerSpacing = 2;
+    public Vector3 JointSpawnerPosition;
+    public float jointSpawnerSpacing = 2;
 
     [Header("Population/Terrain Information")]
     [SerializeField]
     public int distanceBetweenInstantiations;
-    [SerializeField]
     public int numberPerRow = 0;
-    [SerializeField]
     public int generationNumber = 0;
-    [SerializeField]
     public float testingtime = 0;
-    [SerializeField]
     public float bestScore = 0;
 
     [Header("Brain Information")]
     [SerializeField]
     public Vector3 areaForInstantiation;
-    [SerializeField]
     public int numberOfNodes = 0;
-    [SerializeField]
     public int additionalConnections = 0;
     [Space(10)]
-    [SerializeField]
     public float chanceToMutateJoint = 0.0f;
-    [SerializeField]
     public float chanceToRerollJointEntirely = 0.0f;
 
     [Header("Prefabs")]
     [SerializeField]
     public GameObject brainPrefab = null;
-    [SerializeField]
     public GameObject nodePrefab = null;
-    [SerializeField]
     public GameObject jointPrefab = null;
 
     [Header("Connections")]
     [SerializeField]
-    UIController ui;
+    public UIController ui;
+    public PopulationController pc;
+    public LegoBox lb;
+    public TerrainController tc;
+
 
     public void Start() // Get Connections to relevant controllers
     {
         ui = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
+        pc = GameObject.FindGameObjectWithTag("PopulationController").GetComponent<PopulationController>();
+        lb = GameObject.FindGameObjectWithTag("LegoBox").GetComponent<LegoBox>();
+        tc = GameObject.FindGameObjectWithTag("TerrainController").GetComponent<TerrainController>();
     }    
 }

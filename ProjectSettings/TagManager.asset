@@ -14,6 +14,7 @@ TagManager:
   - SettingsPanel
   - DataLogPanel
   - GameData
+  - TerrainController
   layers:
   - Default
   - TransparentFX

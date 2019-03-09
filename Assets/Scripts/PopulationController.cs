@@ -6,40 +6,36 @@ using System.Linq;
 
 public class PopulationController : MonoBehaviour
 {
-    // Data for size of field
-    Vector3 instantiationFieldSize;
-    int numberPerRow = 0;
-    int generationNumber = 0;
-    int distanceBetweenInstantiations = 0;
-
-    GameObject brainPrefab = null;
-
     List<Brain> generation;
-    
-    UIController userInterface;
-    GameData gameData;
+    GameData gd;
     
     DNA currentBestDNA;
+    //TODO instead of just the best DNA take the Top x
+    //When one is created, it has a chance to take any of their DNA intermingled
+    //Then slight variations are created.
+    // bot takes 3 joints from A and 1 joint from B
+    // then all joints are slightly tweaked
+    // or bot takes all 4 joints from B
+    // then all joints are slightly tweaked.
+
+    // TODO check on the variances of the sineFactors
+    // Perhaps squeeze them into closer margins for less chaos
+    
+    // TODO try copying 1 joint's timings to other joints in the same bot
+
+    // TODO try creating symetric bots
 
     public void Awake()
     {
+        gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
         generation = new List<Brain>();
     }
     public void Start()
     {
-        userInterface = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
-        gameData = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
-
-        distanceBetweenInstantiations = gameData.distanceBetweenInstantiations;
-        numberPerRow = gameData.numberPerRow;
-        generationNumber = gameData.generationNumber;
-        brainPrefab = gameData.brainPrefab;
-        gameData.bestScore = 0;
-
         GenerateBrains();
 
         Invoke("GenerateRandomPopulation", 1);
-        Invoke("TEMPLOOP3456", gameData.testingtime);
+        Invoke("TEMPLOOP3456", gd.testingtime);
     }
     public void TEMPLOOP3456()
     {
@@ -47,28 +43,25 @@ public class PopulationController : MonoBehaviour
         DeconstructPopulation();
         CopyBestDNAFromBrains();
         GeneratePopulationFromBestDNA();
-        Invoke("TEMPLOOP3456", gameData.testingtime);
+        Invoke("TEMPLOOP3456", gd.testingtime);
     }
-
     public void GenerateRandomPopulation()
     {
         foreach (Brain bs in generation)
             bs.MakeRandomBody();
     }
-
     public void GenerateBrains()
     {
-        numberPerRow = gameData.numberPerRow;
-        if(generation.Count!= numberPerRow*numberPerRow)
+        if(generation.Count!= gd.numberPerRow*gd.numberPerRow)
         {
             foreach (Brain bs in generation)
                 Destroy(bs.gameObject);
             generation.Clear();
 
-            for (int i = 0; i < numberPerRow; i++)
+            for (int i = 0; i < gd.numberPerRow; i++)
             {
-                for (int j = 0; j < numberPerRow; j++)
-                    generation.Add(Instantiate(brainPrefab, new Vector3(i * distanceBetweenInstantiations, 0, j * distanceBetweenInstantiations), Quaternion.identity).GetComponent<Brain>());
+                for (int j = 0; j < gd.numberPerRow; j++)
+                    generation.Add(Instantiate(gd.brainPrefab, new Vector3(i * gd.distanceBetweenInstantiations, 0, j * gd.distanceBetweenInstantiations), Quaternion.identity).GetComponent<Brain>());
             }
         }
     }
@@ -87,11 +80,11 @@ public class PopulationController : MonoBehaviour
         foreach (Brain bs in generation)
         {
             float curScore = bs.CalculateCurrentScore();
-            if (curScore > gameData.bestScore)
+            if (curScore > gd.bestScore)
             {
-                gameData.bestScore = curScore;
+                gd.bestScore = curScore;
                 currentBestDNA = bs.GetDNA();
-                Debug.Log("best: " + gameData.bestScore);
+                Debug.Log("best: " + gd.bestScore);
             }
         }
     }

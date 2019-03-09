@@ -31,16 +31,7 @@ public class Instruction
         sineB = value.y;
         sineC = value.z;
     }
-    public string toGene()
-    {
-        return "" +
-            baseNode.ToString() + " " +
-            targetNode.ToString() + " " +
-            sineA.ToString() + " " +
-            sineB.ToString() + " " +
-            sineC.ToString();
 
-    }
     // To String is used externally for data analysis
     public string toData()
     {

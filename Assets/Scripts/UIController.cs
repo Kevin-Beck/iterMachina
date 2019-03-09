@@ -10,29 +10,24 @@ public class UIController : MonoBehaviour
     // enact actions during runtime of the scene. Each button will refer to the references in this object as opposed to calling the actions
     // to those objects in the scene.
 
-    // Other gameObjects will occassionally reference this UIController in order to output information via the "LogDataToScreen()" function
-    // Those objects will use findgameobjectwithtag to get this controller and use its public logdata function.
-    
-        
     // Other Controller Objects
-    PopulationController pc;
     GameData gd;
 
     // UI prefabs
     [SerializeField]
-    GameObject buttonPrefab = null;
+    GameObject buttonPrefab = null; // Just a basic button for creating buttons by script
 
     // Timer Related Objects
     [SerializeField]
     Text timer = null;
     float startTime;
     bool finished;
+
     [SerializeField]
     Text genText = null;
 
     //Panels used, each panel gets its buttons added in dynamically using the dictionaries 
     GameObject mainPanel;
-    GameObject secondaryPanel;
 
     // constants used to shape and scale the UI panels and buttons
     const int SIZE_OF_BUTTON_MARGIN = 5;
@@ -49,6 +44,9 @@ public class UIController : MonoBehaviour
 
     public void Awake()
     {
+
+        gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+
         DebugIsOn = true;
         finished = false;
         startTime = Time.time;
@@ -56,44 +54,43 @@ public class UIController : MonoBehaviour
     public void Start()
     {
         // Find all relevant Game Objects and their components
-        FindAllRelevantGameObjects();
+        FindAllRelevantUIObjects();
 
         // Load up the main Panel buttons and apply functionality, resize mainPanel to fit
         ConfigureMainPanel();
-       
+
         // TODO make a secondary panel like the main one
 
         // TODO add the click to the settings menu to make it disappear
         // TODO also make the settings menu work like the Main Panel too cause its good
-    }
-    private void FindAllRelevantGameObjects()
-    {
-        pc = GameObject.FindGameObjectWithTag("PopulationController").GetComponent<PopulationController>();
-        mainPanel = GameObject.FindGameObjectWithTag("MainButtonPanel");
-        DataLog = GameObject.FindGameObjectWithTag("DataLog").GetComponent<Text>();
-        dataLogPanel = GameObject.FindGameObjectWithTag("DataLogPanel");
-        settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
-        gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+
+
 
         // disable all hidden elements
         dataLogPanel.SetActive(false);
         settingsPanel.SetActive(false);
+    }
+    private void FindAllRelevantUIObjects()
+    {
+        mainPanel = GameObject.FindGameObjectWithTag("MainButtonPanel");
+        DataLog = GameObject.FindGameObjectWithTag("DataLog").GetComponent<Text>();
+        dataLogPanel = GameObject.FindGameObjectWithTag("DataLogPanel");
+        settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
     }
 
     private void ConfigureMainPanel()
     {
         Dictionary<string, UnityAction> mainPanelButtonActions = new Dictionary<string, UnityAction>
         {
-            { "Turn Off Muscles", () => pc.ToggleAllMuscles() },
-            { "Settings Menu", () =>  ToggleShowSettingsMenu() },
-            { "6 Construct from 1", () => pc.GeneratePopulationFromBestDNA() },
-            { "5 Copy Best DNA", () => pc.CopyBestDNAFromBrains() },
-            { "4 Destroy All Bots", () => pc.DeconstructPopulation() },
-            { "3 Score All", () => pc.CalculateAllScores() },
-            { "2 Build a Random Gen", () => pc.GenerateRandomPopulation() },
-            { "1 Inialize Brains", () => pc.GenerateBrains() },
-            { "Loop It", () => pc.TEMPLOOP3456() }
-
+            { "Turn Off Muscles",       () => gd.pc.ToggleAllMuscles()              },
+            { "Settings Menu",          () => ToggleShowSettingsMenu()              },
+            { "6 Construct from 1",     () => gd.pc.GeneratePopulationFromBestDNA() },
+            { "5 Copy Best DNA",        () => gd.pc.CopyBestDNAFromBrains()         },
+            { "4 Destroy All Bots",     () => gd.pc.DeconstructPopulation()         },
+            { "3 Score All",            () => gd.pc.CalculateAllScores()            },
+            { "2 Build a Random Gen",   () => gd.pc.GenerateRandomPopulation()      },
+            { "1 Inialize Brains",      () => gd.pc.GenerateBrains()                },
+            { "Loop It",                () => gd.pc.TEMPLOOP3456()                  }
         };
 
         // Create a button and parent it to Main Panel for each buttonAction
@@ -126,18 +123,6 @@ public class UIController : MonoBehaviour
             float guiTime = Time.time - startTime;
             timer.text = "Time: " + guiTime;
         }
-    }
-    public void ResetTimer()
-    {
-        startTime = Time.time;
-    }
-    public void UpdateGen()
-    {
-        genText.text = "Generation: " + gd.generationNumber;
-    }
-    public void setFinish()
-    {
-        finished = true;
     }
 
     public void LogDataToScreen(string data)

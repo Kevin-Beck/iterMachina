@@ -5,24 +5,12 @@ using System.Linq;
 
 public class Brain : MonoBehaviour
 {
-    LegoBox legoBox = null; // This is the parts store that will deliver nodes and joints. Found in Start
-    UIController userInterface = null; // This is the interface with the GUI. Found in Start
-
-    GameData gameData = null; // A psuedo database for intial data consolidation
+    GameData gd; // A psuedo database for intial data consolidation
     Vector3 origin; // the original position of this brain
-    
-    Vector3 instantiationDimension; // This is the allowable room for the brain to build inside when randomly generated
-     
+
     const float NODE_INSTANTIATION_RADIAL_CLEARANCE = 1.5f; // This is how much space is scanned when looking for nodal collisions
                                                          // basically the nodes have a scale of 1.5 currently, meaning that this isscanning a sapce of 1.5 radially from the 
                                                          // node to see if it collides. If a collision occurs the node is not validly placed.
-    
-    int numberOfDesiredNodes = 0;
-    const int MAX_NODES = 15;
-    int numberOfExtraConnections = 0;
-
-    float chanceToMutateJoint = 0;
-
     List<GameObject> nodes;
     List<GameObject> joints;
 
@@ -33,49 +21,12 @@ public class Brain : MonoBehaviour
     // Awake is used to initialize the data for anything uninitialized
     public void Awake()
     {
+        gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
         nodes = new List<GameObject>();
         joints = new List<GameObject>();
         myDNA = new DNA();
-        if (instantiationDimension == null)
-            instantiationDimension = new Vector3(10, 5, 10);
         
         origin = transform.position;
-    }
-
-    // Start is used to find all needed gameobjects by tag before starting any processing
-    public void Start()
-    {
-        legoBox = GameObject.FindGameObjectWithTag("LegoBox").GetComponent<LegoBox>();
-        userInterface = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
-        gameData = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
-
-        instantiationDimension = gameData.areaForInstantiation;
-        numberOfDesiredNodes = gameData.numberOfNodes;
-        numberOfExtraConnections = gameData.additionalConnections;
-        chanceToMutateJoint = gameData.chanceToMutateJoint;
-
-        
-    }
-    public void SetInstantiationDimension(Vector3 newDimension)
-    {
-        instantiationDimension = newDimension;
-    }
-    public void SetNumberOfDesiredNodes(int num)
-    {
-        if (num <= MAX_NODES)
-            numberOfDesiredNodes = num;
-        else
-            userInterface.LogDataToScreen("Brain: NumberOfDesiredNodes > MAX_NODES");
-    }
-    public void SetNumberOfAdditionalConnections(int num)
-    {
-        numberOfExtraConnections = num;
-    }
-
-    public void SetDesiredNumberOfNodes(int newNum)
-    {
-        if(newNum > 0 && newNum < MAX_NODES)
-            numberOfDesiredNodes = newNum;
     }
 
     public float CalculateCurrentScore()
@@ -102,7 +53,7 @@ public class Brain : MonoBehaviour
         int val = nodes.Count;
         for (int j = 0; j < val; j++)
         {
-            legoBox.returnNode(nodes[j]);
+            gd.lb.ReturnNode(nodes[j]);
         }
         nodes.Clear();
     }
@@ -112,12 +63,12 @@ public class Brain : MonoBehaviour
         nodes.Clear();
         joints.Clear();
         // This loop attempts to create a body by creating a node in a valid location, then connecting it to an existing node
-        for (int i = 0; i < numberOfDesiredNodes; i++)
+        for (int i = 0; i < gd.numberOfNodes; i++)
         {
             Vector3 position = GetValidSpaceForNode();
             if (position == ILLEGALVECTOR)
                 return false;
-            GameObject newlyCreatedNode = legoBox.getNode(position);
+            GameObject newlyCreatedNode = gd.lb.GetNode(position);
             newlyCreatedNode.GetComponent<Rigidbody>().useGravity = true; // The new node must use gravity
             nodes.Add(newlyCreatedNode);           
 
@@ -125,7 +76,7 @@ public class Brain : MonoBehaviour
             {
                 if (!GetValidConnectionToNode(nodes.Count - 1, Random.Range(0, i)))
                 {                    
-                    legoBox.returnNode(newlyCreatedNode);
+                    gd.lb.ReturnNode(newlyCreatedNode);
                     nodes.Remove(newlyCreatedNode);                    
                     i--;
                 }else
@@ -140,7 +91,7 @@ public class Brain : MonoBehaviour
         // once we successfully do this numberOfExtraConnections times (or 50 attempts) we jump out of the loop
         int count = 0;
         int loop = 0;
-        while(count < numberOfExtraConnections && loop < 10)
+        while(count < gd.additionalConnections && loop < 10)
         {
             loop++;
             int divider = Random.Range(1, nodes.Count-1);
@@ -196,9 +147,9 @@ public class Brain : MonoBehaviour
     public Instruction MutateDNAInstruction(Instruction old)
     {
         float roll = Random.Range(0f, 1f);
-        if (gameData.chanceToRerollJointEntirely > roll)
+        if (gd.chanceToRerollJointEntirely > roll)
             return new Instruction(old.baseNode, old.targetNode, GetRandomSineFactors());
-        else if (chanceToMutateJoint > roll)
+        else if (gd.chanceToMutateJoint> roll)
             return new Instruction(old.baseNode, old.targetNode, GetTweakSineFactors(old.GetSineFactors()));
         else
             return old;
@@ -206,7 +157,7 @@ public class Brain : MonoBehaviour
     public void ConstructBodyFromDNA()
     {
         for (int i = 0; i < myDNA.nodePositions.Count; i++)
-            nodes.Add(legoBox.getNode(myDNA.nodePositions[i] + origin));
+            nodes.Add(gd.lb.GetNode(myDNA.nodePositions[i] + origin));
 
         for (int i = 0; i < myDNA.designInstructions.Count; i++)
         {
@@ -216,7 +167,7 @@ public class Brain : MonoBehaviour
             Physics.SyncTransforms();
 
             Vector3 vector = (newNode.transform.position - oldNode.transform.position);
-            GameObject newlyCreatedJoint = legoBox.GetJoint(oldNode.transform.position + vector.normalized * .9f);
+            GameObject newlyCreatedJoint = gd.lb.GetJoint(oldNode.transform.position + vector.normalized * .9f);
             joints.Add(newlyCreatedJoint);
             newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
             JointScript js = newlyCreatedJoint.GetComponent<JointScript>();
@@ -229,7 +180,7 @@ public class Brain : MonoBehaviour
     public void ConstructMutatedBodyFromDNA()
     {
         for(int i = 0; i < myDNA.nodePositions.Count; i++)
-            nodes.Add(legoBox.getNode(myDNA.nodePositions[i]+origin));
+            nodes.Add(gd.lb.GetNode(myDNA.nodePositions[i]+origin));
 
         for(int i = 0; i < myDNA.designInstructions.Count; i++)
         {
@@ -239,7 +190,7 @@ public class Brain : MonoBehaviour
             Physics.SyncTransforms();
 
             Vector3 vector = (newNode.transform.position - oldNode.transform.position);
-            GameObject newlyCreatedJoint = legoBox.GetJoint(oldNode.transform.position + vector.normalized * .9f);
+            GameObject newlyCreatedJoint = gd.lb.GetJoint(oldNode.transform.position + vector.normalized * .9f);
             joints.Add(newlyCreatedJoint);
             newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
 
@@ -269,7 +220,7 @@ public class Brain : MonoBehaviour
         if (rch.Length > 0)
             return false;
 
-        GameObject newlyCreatedJoint = legoBox.GetJoint(oldNode.transform.position + vector.normalized * .9f);
+        GameObject newlyCreatedJoint = gd.lb.GetJoint(oldNode.transform.position + vector.normalized * .9f);
         joints.Add(newlyCreatedJoint);
         newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
 
@@ -301,7 +252,7 @@ public class Brain : MonoBehaviour
             if (counter++ > 5)
                 return ILLEGALVECTOR;
 
-            target = origin + new Vector3(Random.Range(0f, instantiationDimension.x), Random.Range(0f, instantiationDimension.y), Random.Range(0f, instantiationDimension.z));
+            target = origin + new Vector3(Random.Range(0f, gd.areaForInstantiation.x), Random.Range(0f, gd.areaForInstantiation.y), Random.Range(0f, gd.areaForInstantiation.z));
 
             if (!Physics.CheckSphere(origin+target, NODE_INSTANTIATION_RADIAL_CLEARANCE))
                 validFound = true;
