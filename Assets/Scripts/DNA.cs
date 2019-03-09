@@ -13,6 +13,21 @@ public class DNA
         nodePositions = new List<Vector3>();
         designInstructions = new List<Instruction>();
     }
+    public DNA(DNA copy)
+    {
+        nodePositions = new List<Vector3>();
+        designInstructions = new List<Instruction>();
+        for(int i = 0; i < copy.nodePositions.Count; i++)
+        {
+            Vector3 pos = new Vector3(copy.nodePositions[i].x, copy.nodePositions[i].y, copy.nodePositions[i].z);
+            nodePositions.Add(pos);
+        }
+        for(int i = 0; i < copy.designInstructions.Count; i++)
+        {
+            Instruction inst = new Instruction(copy.designInstructions[i].baseNode, copy.designInstructions[i].targetNode, new Vector3(copy.designInstructions[i].GetSineFactors().x, copy.designInstructions[i].GetSineFactors().y, copy.designInstructions[i].GetSineFactors().z));
+            designInstructions.Add(inst);
+        }
+    }
     public void Awake()
     {
         nodePositions = new List<Vector3>();
@@ -35,13 +50,6 @@ public class DNA
         sb.Append(nodePositions.Count + ", ");
         sb.Append(designInstructions.Count);
         return sb.ToString();
-    }
-    public void mutateDNA()
-    {
-        foreach(Instruction di in designInstructions)
-        {
-           
-        }
     }
     public void ClearDNA()
     {

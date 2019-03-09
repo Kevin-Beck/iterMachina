@@ -13,6 +13,10 @@ public class GameData : MonoBehaviour
     public int numberPerRow = 0;
     [SerializeField]
     public int generationNumber = 0;
+    [SerializeField]
+    public float testingtime = 0;
+    [SerializeField]
+    public float bestScore = 0;
 
     [Header("Brain Information")]
     [SerializeField]
@@ -23,7 +27,9 @@ public class GameData : MonoBehaviour
     public int additionalConnections = 0;
     [Space(10)]
     [SerializeField]
-    public float mutationChance = 0.0f;
+    public float chanceToMutateJoint = 0.0f;
+    [SerializeField]
+    public float chanceToRerollJointEntirely = 0.0f;
 
     [Header("Prefabs")]
     [SerializeField]

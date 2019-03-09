@@ -21,7 +21,7 @@ public class Brain : MonoBehaviour
     const int MAX_NODES = 15;
     int numberOfExtraConnections = 0;
 
-    float mutationChance = 0;
+    float chanceToMutateJoint = 0;
 
     List<GameObject> nodes;
     List<GameObject> joints;
@@ -52,7 +52,9 @@ public class Brain : MonoBehaviour
         instantiationDimension = gameData.areaForInstantiation;
         numberOfDesiredNodes = gameData.numberOfNodes;
         numberOfExtraConnections = gameData.additionalConnections;
-        mutationChance = gameData.mutationChance;
+        chanceToMutateJoint = gameData.chanceToMutateJoint;
+
+        
     }
     public void SetInstantiationDimension(Vector3 newDimension)
     {
@@ -78,9 +80,10 @@ public class Brain : MonoBehaviour
 
     public float CalculateCurrentScore()
     {
+        FinalizeNodesForScoring();
         float Xmagnitude = 0;
         for(int i = 0; i < nodes.Count; i++)
-            Xmagnitude += (nodes[0].transform.position.x - myDNA.nodePositions[0].x+origin.x);        
+            Xmagnitude += (nodes[0].GetComponent<NodeScript>().GetCurrentScore());        
         return Xmagnitude;
     }
     public void DeconstructBody()
@@ -149,7 +152,7 @@ public class Brain : MonoBehaviour
 
     public void SetDNA(DNA newDNA)
     {
-        myDNA = newDNA;
+        myDNA = new DNA(newDNA);
     }
     public DNA GetDNA()
     {
@@ -159,18 +162,21 @@ public class Brain : MonoBehaviour
     public void MakeRandomBody()
     {
         ConstructNewRandomBody();
+        InitializeNodesForScoring();
         ToggleAllMuscles();
         ToggleAllRenderers();
     }
     public void MakeDNABody()
     {
         ConstructBodyFromDNA();
+        InitializeNodesForScoring();
         ToggleAllMuscles();
         ToggleAllRenderers();
     }
     public void MakeMutatedDNABody()
     {
         ConstructMutatedBodyFromDNA();
+        InitializeNodesForScoring();
         ToggleAllMuscles();
         ToggleAllRenderers();
     }
@@ -187,13 +193,15 @@ public class Brain : MonoBehaviour
         foreach (GameObject node in nodes)
             node.GetComponent<NodeScript>().ToggleRenderer();
     }
-    public void MutateJoints()
+    public Instruction MutateDNAInstruction(Instruction old)
     {
-        foreach(GameObject joint in joints)
-        {
-            if (Random.Range(0f, 1f) > (1 - mutationChance))
-                joint.GetComponent<JointScript>().SetSineFactors(GetRandomSineFactors());
-        }
+        float roll = Random.Range(0f, 1f);
+        if (gameData.chanceToRerollJointEntirely > roll)
+            return new Instruction(old.baseNode, old.targetNode, GetRandomSineFactors());
+        else if (chanceToMutateJoint > roll)
+            return new Instruction(old.baseNode, old.targetNode, GetTweakSineFactors(old.GetSineFactors()));
+        else
+            return old;
     }
     public void ConstructBodyFromDNA()
     {
@@ -240,8 +248,7 @@ public class Brain : MonoBehaviour
             js.ConnectBaseToNode(oldNode);
             js.ConnectEdgeToNode(newNode);
 
-            if (mutationChance > Random.Range(0f, 1))
-                myDNA.designInstructions[i].SetSineFactors(GetRandomSineFactors());
+            myDNA.designInstructions[i] = MutateDNAInstruction(myDNA.designInstructions[i]);
 
             js.SetSineFactors(myDNA.designInstructions[i].GetSineFactors());
         }
@@ -275,6 +282,10 @@ public class Brain : MonoBehaviour
         myDNA.AddToInstructions(new Instruction(b, a, js.GetSineFactors()));
         return true;
     }
+    private Vector3 GetTweakSineFactors(Vector3 curSine)
+    {
+        return curSine + new Vector3(Random.Range(-.1f, 0.1f), Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+    }
     public Vector3 GetRandomSineFactors()
     {
         return new Vector3(Random.Range(0f, 5f), Random.Range(0f, 3.2f), Random.Range(-1.8f, 1.8f));
@@ -296,5 +307,19 @@ public class Brain : MonoBehaviour
                 validFound = true;
         }
         return target;
+    }
+    private void InitializeNodesForScoring()
+    {
+        for(int i = 0; i < nodes.Count; i++)
+        {
+            nodes[i].GetComponent<NodeScript>().SetStartPosition();
+        }
+    }
+    private void FinalizeNodesForScoring()
+    {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            nodes[i].GetComponent<NodeScript>().SetEndPosition();
+        }
     }
 }

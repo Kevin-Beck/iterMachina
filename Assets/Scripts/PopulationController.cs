@@ -18,12 +18,8 @@ public class PopulationController : MonoBehaviour
     
     UIController userInterface;
     GameData gameData;
-
-    float timerMax = 10;
-    float timer = -5;
-
+    
     DNA currentBestDNA;
-    float maxBestScore;
 
     public void Awake()
     {
@@ -38,7 +34,12 @@ public class PopulationController : MonoBehaviour
         numberPerRow = gameData.numberPerRow;
         generationNumber = gameData.generationNumber;
         brainPrefab = gameData.brainPrefab;
-        maxBestScore = 0;
+        gameData.bestScore = 0;
+
+        GenerateBrains();
+
+        Invoke("GenerateRandomPopulation", 1);
+        Invoke("TEMPLOOP3456", gameData.testingtime);
     }
     public void TEMPLOOP3456()
     {
@@ -46,11 +47,9 @@ public class PopulationController : MonoBehaviour
         DeconstructPopulation();
         CopyBestDNAFromBrains();
         GeneratePopulationFromBestDNA();
+        Invoke("TEMPLOOP3456", gameData.testingtime);
     }
-    public void FixedUpdate()
-    {
 
-    }
     public void GenerateRandomPopulation()
     {
         foreach (Brain bs in generation)
@@ -88,11 +87,11 @@ public class PopulationController : MonoBehaviour
         foreach (Brain bs in generation)
         {
             float curScore = bs.CalculateCurrentScore();
-            if (curScore > maxBestScore)
+            if (curScore > gameData.bestScore)
             {
-                maxBestScore = curScore;
+                gameData.bestScore = curScore;
                 currentBestDNA = bs.GetDNA();
-                Debug.Log("best: " + maxBestScore);
+                Debug.Log("best: " + gameData.bestScore);
             }
         }
     }
