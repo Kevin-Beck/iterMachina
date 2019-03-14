@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
@@ -82,15 +83,8 @@ public class UIController : MonoBehaviour
     {
         Dictionary<string, UnityAction> mainPanelButtonActions = new Dictionary<string, UnityAction>
         {
-            { "Turn Off Muscles",       () => gd.pc.ToggleAllMuscles()              },
-            { "Settings Menu",          () => ToggleShowSettingsMenu()              },
-            { "6 Construct from 1",     () => gd.pc.GeneratePopulationFromBestDNA() },
-            { "5 Copy Best DNA",        () => gd.pc.CopyBestDNAFromBrains()         },
-            { "4 Destroy All Bots",     () => gd.pc.DeconstructPopulation()         },
-            { "3 Score All",            () => gd.pc.CalculateAllScores()            },
-            { "2 Build a Random Gen",   () => gd.pc.GenerateRandomPopulation()      },
-            { "1 Inialize Brains",      () => gd.pc.GenerateBrains()                },
-            { "Loop It",                () => gd.pc.TEMPLOOP3456()                  }
+            { "Back To Editing",                () => BackToEditing()            },
+            { "Quit",                           () => QuitApplication()          }            
         };
 
         // Create a button and parent it to Main Panel for each buttonAction
@@ -115,6 +109,14 @@ public class UIController : MonoBehaviour
             Transform buttonTransform = mainPanelTransform.GetChild(i);
             buttonTransform.position = new Vector3((WIDTH_OF_BUTTON + SIZE_OF_BUTTON_MARGIN * 2) / 2, SIZE_OF_BUTTON_MARGIN * 4 + (i * 30), 0);
         }
+    }
+    public void BackToEditing()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void QuitApplication()
+    {
+        Application.Quit();
     }
     public void FixedUpdate()
     {

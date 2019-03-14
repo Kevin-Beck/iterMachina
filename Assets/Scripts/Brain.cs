@@ -235,11 +235,18 @@ public class Brain : MonoBehaviour
     }
     private Vector3 GetTweakSineFactors(Vector3 curSine)
     {
-        return curSine + new Vector3(Random.Range(-.1f, 0.1f), Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+        Vector3 newSine = curSine + new Vector3(Random.Range(-.1f, 0.1f), Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+        if (newSine.x > gd.aMax || newSine.x < gd.aMin)
+            newSine.x = Random.Range(gd.aMin, gd.aMax);
+        if (newSine.y > gd.bMax || newSine.y < gd.bMin)
+            newSine.y = Random.Range(gd.bMin, gd.bMax);
+        if (newSine.z > gd.cMax || newSine.z < gd.cMin)
+            newSine.z = Random.Range(gd.cMin, gd.cMax);
+        return newSine;
     }
     public Vector3 GetRandomSineFactors()
     {
-        return new Vector3(Random.Range(0f, 5f), Random.Range(0f, 3.2f), Random.Range(-1.8f, 1.8f));
+        return new Vector3(Random.Range(gd.aMin, gd.aMax), Random.Range(gd.bMin, gd.bMax), Random.Range(gd.cMin, gd.cMax));
     }
     private Vector3 GetValidSpaceForNode() {
         bool validFound = false;

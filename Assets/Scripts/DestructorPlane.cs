@@ -18,6 +18,7 @@ public class DestructorPlane : MonoBehaviour
     public void OnCollisionEnter(Collision collision)
     {
         pc.DeconstructPopulation();
+        CancelInvoke();
     }
 
 }

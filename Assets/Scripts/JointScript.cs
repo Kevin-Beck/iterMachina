@@ -72,7 +72,6 @@ public class JointScript : MonoBehaviour
         posMuscle.spring = initSpring + val*initSpring;
         negMuscle.spring = initSpring - val*initSpring;
         UpdateJointRender(val);
-        //rb.WakeUp();
     }
     public Vector3 GetSineFactors()
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.IO;
 
 public class PopulationController : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class PopulationController : MonoBehaviour
 
     // TODO try creating symetric bots
 
+    // Potentially output the individual instructions to see what is going on
+
     public void Awake()
     {
         gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
@@ -34,17 +37,48 @@ public class PopulationController : MonoBehaviour
     {
         GenerateBrains();
 
-        Invoke("GenerateRandomPopulation", 1);
+        //   Invoke("GenerateRandomPopulation", 1);
+        Invoke("TestLoop", 1);
+       // Invoke("TEMPLOOP3456", gd.testingtime);
+        
+    }
+    public void TestLoop()
+    {
+        StreamReader reader = new StreamReader("Assets/Resources/test.txt");
+        currentBestDNA = new DNA(reader.ReadLine());
+
+
+        CopyBestDNAToBrains();
+        GeneratePopulationFromBestDNA();
         Invoke("TEMPLOOP3456", gd.testingtime);
     }
     public void TEMPLOOP3456()
     {
+        
+        gd.testingtime++;
+        bool reset = false;
+        if (Random.Range(0f, 1f) > .95f)
+        {
+            reset = true;
+        }
         CalculateAllScores();
         DeconstructPopulation();
-        CopyBestDNAFromBrains();
+
+        gd.numberPerRow = 8;
+
+        if(reset)
+        {
+            gd.testingtime = 10;
+            gd.bestScore = 0;
+            reset = false;
+        }
+
+        GenerateBrains();
+        CopyBestDNAToBrains();
         GeneratePopulationFromBestDNA();
         Invoke("TEMPLOOP3456", gd.testingtime);
     }
+
     public void GenerateRandomPopulation()
     {
         foreach (Brain bs in generation)
@@ -52,7 +86,7 @@ public class PopulationController : MonoBehaviour
     }
     public void GenerateBrains()
     {
-        if(generation.Count!= gd.numberPerRow*gd.numberPerRow)
+        if(generation.Count != gd.numberPerRow*gd.numberPerRow)
         {
             foreach (Brain bs in generation)
                 Destroy(bs.gameObject);
@@ -103,7 +137,7 @@ public class PopulationController : MonoBehaviour
         foreach (Brain bs in generation)
             bs.ToggleAllMuscles();
     }
-    public void CopyBestDNAFromBrains()
+    public void CopyBestDNAToBrains()
     {
         for (int i = 0; i < generation.Count; i++)
             generation.ElementAt(i).SetDNA(currentBestDNA);

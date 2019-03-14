@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
+using System;
+using System.Linq;
 
 public class DNA
 {
@@ -12,6 +14,45 @@ public class DNA
     {
         nodePositions = new List<Vector3>();
         designInstructions = new List<Instruction>();
+    }
+    public DNA(string dnaString)
+    {
+        nodePositions = new List<Vector3>();
+        designInstructions = new List<Instruction>();
+
+
+        string s = dnaString.Replace(" ", String.Empty);
+        string[] values = s.Split(',');
+        float[] valuesf = Array.ConvertAll(values, float.Parse);
+        //
+        int numberOfNodes = (int)valuesf[valuesf.Length - 2];
+        Debug.Log(numberOfNodes);
+        int numberOfInstructions = (int)valuesf[valuesf.Length-1];
+
+        for(int i = 0; i < numberOfNodes*3; i++)
+        {
+            float x = valuesf[i];
+            float y = valuesf[++i];
+            float z = valuesf[++i];
+
+            AddToPositions(new Vector3(x, y, z));
+        }
+        for (int i = numberOfNodes * 3; i < values.Length - 6; i++)
+        {
+            int baseNode = (int) valuesf[i];
+            int targetNode = (int) valuesf[++i];
+            float a = valuesf[++i];
+            float b = valuesf[++i];
+            float c = valuesf[++i];
+
+            AddToInstructions(new Instruction(baseNode, targetNode, new Vector3(a, b, c)));
+        }
+        Debug.Log(toData());
+    }
+    public DNA(List<Vector3> pos, List<Instruction> inst)
+    {
+        nodePositions = pos;
+        designInstructions = inst;
     }
     public DNA(DNA copy)
     {

@@ -825,13 +825,14 @@ MonoBehaviour:
   JointSpawnerPosition: {x: 0, y: -110, z: 0}
   jointSpawnerSpacing: 2
   distanceBetweenInstantiations: 40
-  numberPerRow: 11
+  numberPerRow: 8
+  MAX_PER_ROW: 15
   generationNumber: 0
-  testingtime: 10
+  testingtime: 15
   bestScore: 0
-  areaForInstantiation: {x: 8, y: 5, z: 8}
-  numberOfNodes: 5
-  additionalConnections: 2
+  areaForInstantiation: {x: 10, y: 4, z: 10}
+  numberOfNodes: 8
+  additionalConnections: 3
   chanceToMutateJoint: 0.75
   chanceToRerollJointEntirely: 0.1
   brainPrefab: {fileID: 3334053556957822947, guid: d8c0562d47e373c46970d94ed2500528,
@@ -844,6 +845,12 @@ MonoBehaviour:
   pc: {fileID: 0}
   lb: {fileID: 0}
   tc: {fileID: 0}
+  aMin: 0
+  aMax: 5
+  bMin: 0
+  bMax: 3.2
+  cMin: -1.8
+  cMax: 1.8
 --- !u!4 &915435882
 Transform:
   m_ObjectHideFlags: 0
@@ -1850,7 +1857,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1188163468}
   m_HandleRect: {fileID: 1188163467}
   m_Direction: 2
-  m_Value: 0.00000002192161
+  m_Value: 0
   m_Size: 0.02386192
   m_NumberOfSteps: 0
   m_OnValueChanged:
