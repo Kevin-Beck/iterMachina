@@ -44,8 +44,8 @@ public class PopulationController : MonoBehaviour
     }
     public void TestLoop()
     {
-        StreamReader reader = new StreamReader("Assets/Resources/test.txt");
-        currentBestDNA = new DNA(reader.ReadLine());
+        //  StreamReader reader = new StreamReader("C:\\iterBot\\DNA.txt");
+        currentBestDNA = gd.sc.builtDNA;
 
 
         CopyBestDNAToBrains();

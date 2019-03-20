@@ -23,6 +23,7 @@ TagManager:
   - GizmoYneg
   - GizmoZneg
   - JointBuilder
+  - SceneController
   layers:
   - Default
   - TransparentFX

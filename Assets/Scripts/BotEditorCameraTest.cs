@@ -13,6 +13,7 @@ public class BotEditorCameraTest : MonoBehaviour
     [SerializeField] GameObject NodeBuilderPrefab = null;
     [SerializeField] GameObject JointBuilderPrefab = null;
 
+    SceneController sc = null;
     List<GameObject> myGizmos = null;
 
     [SerializeField] List<GameObject> curSelected = null;
@@ -26,6 +27,7 @@ public class BotEditorCameraTest : MonoBehaviour
 
     void Start()
     {
+        sc = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
         tempJoints = new List<BuilderTempInstruction>();
         nodes = new List<GameObject>();
         myGizmos = new List<GameObject>();
@@ -57,7 +59,7 @@ public class BotEditorCameraTest : MonoBehaviour
                         count = tempJoints.Count;
                     }
                 }
-                GameObject.Destroy(go);
+                Destroy(go);
             }
             curSelected.Clear();
         }
@@ -149,12 +151,17 @@ public class BotEditorCameraTest : MonoBehaviour
 
         foreach(BuilderTempInstruction bti in tempJoints)
             savedDNA.AddToInstructions(new Instruction(nodes.IndexOf(bti.baseNode), nodes.IndexOf(bti.tailNode), Vector3.zero));
-        Debug.Log(savedDNA.toData());
 
-        File.Delete("Assets/Resources/test.txt");
-        StreamWriter writer = new StreamWriter("Assets/Resources/test.txt", true);
+        sc.builtDNA = savedDNA;
+
+        /*
+        File.Delete("C:\\iterBot\\DNA.txt");
+        File.Create("C:\\iterBot\\");
+        File.Create("C:\\iterBot\\DNA.txt");
+        StreamWriter writer = new StreamWriter("C:\\iterBot\\DNA.txt", true);
         writer.WriteLine(savedDNA.toData());
         writer.Close();
+        */
     }
     private void DeselectAllSelectedItems()
     {

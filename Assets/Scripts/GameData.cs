@@ -41,6 +41,7 @@ public class GameData : MonoBehaviour
     public PopulationController pc;
     public LegoBox lb;
     public TerrainController tc;
+    public SceneController sc;
 
     [Header("Sine Factors")]
     [Header("Sin(a*Cos(b*time)+c)")]
@@ -58,5 +59,6 @@ public class GameData : MonoBehaviour
         pc = GameObject.FindGameObjectWithTag("PopulationController").GetComponent<PopulationController>();
         lb = GameObject.FindGameObjectWithTag("LegoBox").GetComponent<LegoBox>();
         tc = GameObject.FindGameObjectWithTag("TerrainController").GetComponent<TerrainController>();
+        sc = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
     }    
 }
