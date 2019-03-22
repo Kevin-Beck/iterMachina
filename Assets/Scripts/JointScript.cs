@@ -42,7 +42,8 @@ public class JointScript : MonoBehaviour
     {
         if(musclesOn)
         {
-            UpdateMuscles(Mathf.Sin(A * Mathf.Cos(B * Time.fixedTime) + C));
+            // UpdateMuscles(Mathf.Sin(A * Mathf.Cos(B * Time.fixedTime) + C));
+            UpdateMuscles(Mathf.Sin(A * Mathf.Cos(2.9f * Time.fixedTime)));
         }
     }
     public void SetSineFactors(Vector3 v)
