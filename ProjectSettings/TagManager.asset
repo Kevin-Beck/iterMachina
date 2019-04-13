@@ -24,6 +24,7 @@ TagManager:
   - GizmoZneg
   - JointBuilder
   - SceneController
+  - EditorController
   layers:
   - Default
   - TransparentFX

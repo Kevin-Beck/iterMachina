@@ -5,12 +5,13 @@ using UnityEngine;
 public class Instruction
 {
     public Instruction() { }
-    public Instruction(int baseN, int targetN, Vector3 sine) {
+    public Instruction(int baseN, int targetN, Vector3 sine, float rot) {
         baseNode = baseN;
         targetNode = targetN;
         sineA = sine.x;
         sineB = sine.y;
         sineC = sine.z;
+        rotation = rot;
     }
     public int baseNode; // The starting node
     public int targetNode; // the target node
@@ -20,6 +21,17 @@ public class Instruction
     float sineA;
     float sineB;
     float sineC;
+
+    float rotation;
+    
+    public void SetRotation(float rot)
+    {
+        rotation = rot;
+    }
+    public float GetRotation()
+    {
+        return rotation;
+    }
     // To gene is used internally by the Brain for construction
     public Vector3 GetSineFactors()
     {

@@ -31,6 +31,7 @@ public class PopulationController : MonoBehaviour
     public void Awake()
     {
         gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+        gd.pc = gameObject.GetComponent<PopulationController>();
         generation = new List<Brain>();
     }
     public void Start()
@@ -45,7 +46,7 @@ public class PopulationController : MonoBehaviour
     public void TestLoop()
     {
         //  StreamReader reader = new StreamReader("C:\\iterBot\\DNA.txt");
-        currentBestDNA = gd.sc.builtDNA;
+        currentBestDNA = gd.editorDNA;
 
 
         CopyBestDNAToBrains();

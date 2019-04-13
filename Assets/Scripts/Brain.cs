@@ -148,9 +148,9 @@ public class Brain : MonoBehaviour
     {
         float roll = Random.Range(0f, 1f);
         if (gd.chanceToRerollJointEntirely > roll)
-            return new Instruction(old.baseNode, old.targetNode, GetRandomSineFactors());
+            return new Instruction(old.baseNode, old.targetNode, GetRandomSineFactors(), GetRandomRotFactor());
         else if (gd.chanceToMutateJoint> roll)
-            return new Instruction(old.baseNode, old.targetNode, GetTweakSineFactors(old.GetSineFactors()));
+            return new Instruction(old.baseNode, old.targetNode, GetTweakSineFactors(old.GetSineFactors()), GetTweakRotFactor(old.GetRotation()));
         else
             return old;
     }
@@ -169,7 +169,10 @@ public class Brain : MonoBehaviour
             Vector3 vector = (newNode.transform.position - oldNode.transform.position);
             GameObject newlyCreatedJoint = gd.lb.GetJoint(oldNode.transform.position + vector.normalized * .9f);
             joints.Add(newlyCreatedJoint);
+            
             newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
+            newlyCreatedJoint.transform.rotation *= Quaternion.Euler(myDNA.designInstructions[i].GetRotation(), 0, 0);
+
             JointScript js = newlyCreatedJoint.GetComponent<JointScript>();
             js.SetBoneSize(vector.magnitude - 2.5f);
             js.ConnectBaseToNode(oldNode);
@@ -189,17 +192,19 @@ public class Brain : MonoBehaviour
 
             Physics.SyncTransforms();
 
+            myDNA.designInstructions[i] = MutateDNAInstruction(myDNA.designInstructions[i]);
+
             Vector3 vector = (newNode.transform.position - oldNode.transform.position);
             GameObject newlyCreatedJoint = gd.lb.GetJoint(oldNode.transform.position + vector.normalized * .9f);
             joints.Add(newlyCreatedJoint);
             newlyCreatedJoint.transform.rotation = Quaternion.FromToRotation(Vector3.right, vector);
+            newlyCreatedJoint.transform.rotation *= Quaternion.Euler(myDNA.designInstructions[i].GetRotation(), 0, 0);
 
             JointScript js = newlyCreatedJoint.GetComponent<JointScript>();
             js.SetBoneSize(vector.magnitude - 2.5f);
             js.ConnectBaseToNode(oldNode);
             js.ConnectEdgeToNode(newNode);
 
-            myDNA.designInstructions[i] = MutateDNAInstruction(myDNA.designInstructions[i]);
 
             js.SetSineFactors(myDNA.designInstructions[i].GetSineFactors());
         }
@@ -230,7 +235,7 @@ public class Brain : MonoBehaviour
         js.ConnectEdgeToNode(newNode);
         js.SetSineFactors(GetRandomSineFactors());
 
-        myDNA.AddToInstructions(new Instruction(b, a, js.GetSineFactors()));
+        myDNA.AddToInstructions(new Instruction(b, a, js.GetSineFactors(), GetRandomRotFactor()));
         return true;
     }
     private Vector3 GetTweakSineFactors(Vector3 curSine)
@@ -265,6 +270,17 @@ public class Brain : MonoBehaviour
                 validFound = true;
         }
         return target;
+    }
+    public float GetRandomRotFactor()
+    {
+        return Random.Range(0, 180);
+    }
+    private float GetTweakRotFactor(float curRot)
+    {
+        float newRot = curRot + Random.Range(-5f, 5f);
+        if (newRot > 180 || newRot < 0)
+            newRot = Random.Range(0f, 180f);
+        return newRot;
     }
     private void InitializeNodesForScoring()
     {

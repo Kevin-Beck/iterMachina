@@ -15,6 +15,8 @@ public class DNA
         nodePositions = new List<Vector3>();
         designInstructions = new List<Instruction>();
     }
+    // TEMP COMMENTING OUT STRING
+    /* This does not properly account for rotation of joint objects
     public DNA(string dnaString)
     {
         nodePositions = new List<Vector3>();
@@ -49,6 +51,7 @@ public class DNA
         }
         Debug.Log(toData());
     }
+    */
     public DNA(List<Vector3> pos, List<Instruction> inst)
     {
         nodePositions = pos;
@@ -65,7 +68,7 @@ public class DNA
         }
         for(int i = 0; i < copy.designInstructions.Count; i++)
         {
-            Instruction inst = new Instruction(copy.designInstructions[i].baseNode, copy.designInstructions[i].targetNode, new Vector3(copy.designInstructions[i].GetSineFactors().x, copy.designInstructions[i].GetSineFactors().y, copy.designInstructions[i].GetSineFactors().z));
+            Instruction inst = new Instruction(copy.designInstructions[i].baseNode, copy.designInstructions[i].targetNode, new Vector3(copy.designInstructions[i].GetSineFactors().x, copy.designInstructions[i].GetSineFactors().y, copy.designInstructions[i].GetSineFactors().z), copy.designInstructions[i].GetRotation());
             designInstructions.Add(inst);
         }
     }

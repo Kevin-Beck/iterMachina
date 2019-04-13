@@ -15,6 +15,7 @@ public class LegoBox : MonoBehaviour
     public void Awake()
     {
         gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+        gd.lb = gameObject.GetComponent<LegoBox>();
 
         nodeCounter = -1;
         nodeBox = new List<GameObject>();

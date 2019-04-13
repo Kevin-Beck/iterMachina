@@ -422,6 +422,80 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &537589439
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 537589441}
+  - component: {fileID: 537589440}
+  m_Layer: 0
+  m_Name: GameData
+  m_TagString: GameData
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &537589440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537589439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c033bcbd9b6dde4996793591cb2c59e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NodeSpawnerPosition: {x: 0, y: -100, z: 0}
+  nodeSpawnerSpacing: 2
+  JointSpawnerPosition: {x: 0, y: -110, z: 0}
+  jointSpawnerSpacing: 2
+  distanceBetweenInstantiations: 40
+  numberPerRow: 8
+  MAX_PER_ROW: 15
+  generationNumber: 0
+  testingtime: 15
+  bestScore: 0
+  areaForInstantiation: {x: 10, y: 4, z: 10}
+  numberOfNodes: 8
+  additionalConnections: 3
+  chanceToMutateJoint: 0.75
+  chanceToRerollJointEntirely: 0.1
+  brainPrefab: {fileID: 3334053556957822947, guid: d8c0562d47e373c46970d94ed2500528,
+    type: 3}
+  nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
+    type: 3}
+  jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,
+    type: 3}
+  ui: {fileID: 0}
+  pc: {fileID: 0}
+  lb: {fileID: 0}
+  tc: {fileID: 0}
+  aMin: 0
+  aMax: 5
+  bMin: 0
+  bMax: 3.2
+  cMin: -1.8
+  cMax: 1.8
+--- !u!4 &537589441
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537589439}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &549354199
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,49 +594,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549354199}
   m_CullTransparentMesh: 0
---- !u!1 &659995688
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 659995690}
-  - component: {fileID: 659995689}
-  m_Layer: 0
-  m_Name: SceneController
-  m_TagString: SceneController
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &659995689
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659995688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d8cc9997ac2c9e4d8855ff05d8ee173, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &659995690
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659995688}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 207.57028, y: 104.67342, z: 239.63565}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705991219
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,7 +1243,7 @@ GameObject:
   - component: {fileID: 1178540225}
   m_Layer: 0
   m_Name: Manager
-  m_TagString: Untagged
+  m_TagString: EditorController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1237,6 +1268,7 @@ MonoBehaviour:
   JointBuilderPrefab: {fileID: 4238294506440970847, guid: 37f2cebf7184dd446a851b1406e75c85,
     type: 3}
   curSelected: []
+  nodes: []
   InstructionCanvas: {fileID: 1959948841}
 --- !u!4 &1178540226
 Transform:

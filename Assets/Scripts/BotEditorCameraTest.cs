@@ -13,12 +13,12 @@ public class BotEditorCameraTest : MonoBehaviour
     [SerializeField] GameObject NodeBuilderPrefab = null;
     [SerializeField] GameObject JointBuilderPrefab = null;
 
-    SceneController sc = null;
+    GameData gd = null;
     List<GameObject> myGizmos = null;
 
-    [SerializeField] List<GameObject> curSelected = null;
+    public List<GameObject> curSelected = null;
 
-    List<GameObject> nodes = null;
+    [SerializeField] List<GameObject> nodes = null;
 
     List<BuilderTempInstruction> tempJoints = null;
 
@@ -27,11 +27,28 @@ public class BotEditorCameraTest : MonoBehaviour
 
     void Start()
     {
-        sc = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
-        tempJoints = new List<BuilderTempInstruction>();
-        nodes = new List<GameObject>();
-        myGizmos = new List<GameObject>();
-        curSelected = new List<GameObject>();
+        if(gd == null)
+        {
+            gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+            tempJoints = new List<BuilderTempInstruction>();
+            nodes = new List<GameObject>();
+            myGizmos = new List<GameObject>();
+            curSelected = new List<GameObject>();
+        }
+        if(gd.editorDNA != null)
+        {
+            tempJoints = new List<BuilderTempInstruction>();
+            nodes = new List<GameObject>();
+            foreach (Vector3 pos in gd.editorDNA.nodePositions)
+                nodes.Add(Instantiate(NodeBuilderPrefab, pos, Quaternion.identity));
+            foreach (Instruction inst in gd.editorDNA.designInstructions)
+            {
+                GameObject newNode = nodes.ElementAt(inst.targetNode);
+                GameObject oldNode = nodes.ElementAt(inst.baseNode);
+
+                CheckAndCreateJoint(oldNode, newNode);
+            }
+        }
     }
 
     void Update()
@@ -44,23 +61,7 @@ public class BotEditorCameraTest : MonoBehaviour
         }
         if(Input.GetKeyDown("d"))
         {
-            foreach (GameObject go in curSelected)
-            {
-                nodes.Remove(go);
-                int count = tempJoints.Count;
-                for(int i = 0; i < count; i++)
-                {
-                    BuilderTempInstruction bti = tempJoints.ElementAt(i);
-                    if (go == bti.baseNode || go == bti.tailNode)
-                    {
-                        Destroy(bti.joint);
-                        tempJoints.Remove(bti);
-                        i--;
-                        count = tempJoints.Count;
-                    }
-                }
-                Destroy(go);
-            }
+            DeleteCurSelectedNodes();
             curSelected.Clear();
         }
         if(Input.GetKeyDown("j"))
@@ -79,6 +80,45 @@ public class BotEditorCameraTest : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
             LeftMouseButtonFunctions();
+
+        if(Input.GetMouseButtonUp(0))
+            ResetGizmos();
+    }
+    private void DeleteCurSelectedNodes() // Deletes nodes (and connected joints)
+    {
+        foreach (GameObject go in curSelected)
+        {
+            DeleteJointsConnectedToNode(go);
+            nodes.Remove(go);
+            Destroy(go);
+        }
+    }
+    private void DeleteJointsConnectedToNode(GameObject node)
+    {
+        int count = tempJoints.Count;
+        for (int i = 0; i < count; i++)
+        {
+            BuilderTempInstruction bti = tempJoints.ElementAt(i);
+            if (node == bti.baseNode || node == bti.tailNode)
+            {
+                Destroy(bti.joint);
+                tempJoints.Remove(bti);
+                i--;
+                count = tempJoints.Count;
+            }
+            AdjustNodeReferenceInInstruction(bti, node);
+        }
+    }
+    private void AdjustNodeReferenceInInstruction(BuilderTempInstruction tempInst, GameObject nodeGO)
+    {
+        int indexOfNodeToRemove = nodes.IndexOf(nodeGO);
+        int baseNodePosition = nodes.IndexOf(tempInst.baseNode);
+        int tailNodePosition = nodes.IndexOf(tempInst.tailNode);
+
+        if (baseNodePosition > indexOfNodeToRemove)
+            tempInst.baseNode = nodes[baseNodePosition--];
+        if (tailNodePosition > indexOfNodeToRemove)
+            tempInst.tailNode = nodes[tailNodePosition--];
     }
     private bool CheckAndCreateJoint(GameObject oldNode, GameObject newNode)
     {
@@ -106,28 +146,25 @@ public class BotEditorCameraTest : MonoBehaviour
         }
         return good;
     }
-    private void MoveSelected(Vector3 position)
+    public void MoveSelected(Vector3 position)
     {
         foreach(GameObject go in curSelected)
             go.GetComponent<Transform>().transform.position = position + go.GetComponent<Transform>().transform.position;
 
-        foreach(GameObject go in myGizmos)
-            go.GetComponent<Transform>().transform.position = position + go.GetComponent<Transform>().transform.position;
-
         foreach (GameObject go in curSelected)
         {
-            int count = tempJoints.Count;
-            for (int i = 0; i < count; i++)
-            {
-                BuilderTempInstruction bti = tempJoints.ElementAt(i);
-                if (go == bti.baseNode || go == bti.tailNode)
-                {
-                    Destroy(bti.joint);
-                    tempJoints.Remove(bti);
-                    i--;
-                    count = tempJoints.Count;
-                }
-            }
+            DeleteJointsConnectedToNode(go);
+        }
+    }
+    public void ResetGizmos()
+    {
+        foreach (GameObject go in myGizmos)
+            Destroy(go);
+        foreach (GameObject go in curSelected)
+        {
+            GameObject giz = Instantiate(GizmoPrefab, go.transform.position, Quaternion.identity);
+            giz.transform.SetParent(go.transform, true);
+            myGizmos.Add(giz);
         }
     }
     public void ToggleInstructionPanel()
@@ -143,16 +180,17 @@ public class BotEditorCameraTest : MonoBehaviour
     {
         Application.Quit();
     }
-    public void SaveBotToFile()
+    public void SaveBot()
     {
+        RemoveExtraNodes();
         DNA savedDNA = new DNA();
         foreach(GameObject node in nodes)
             savedDNA.AddToPositions(node.transform.position);
 
         foreach(BuilderTempInstruction bti in tempJoints)
-            savedDNA.AddToInstructions(new Instruction(nodes.IndexOf(bti.baseNode), nodes.IndexOf(bti.tailNode), Vector3.zero));
+            savedDNA.AddToInstructions(new Instruction(nodes.IndexOf(bti.baseNode), nodes.IndexOf(bti.tailNode), Vector3.zero, 0));
 
-        sc.builtDNA = savedDNA;
+        gd.editorDNA = savedDNA;
 
         /*
         File.Delete("C:\\iterBot\\DNA.txt");
@@ -162,6 +200,37 @@ public class BotEditorCameraTest : MonoBehaviour
         writer.WriteLine(savedDNA.toData());
         writer.Close();
         */
+    }
+    public void RemoveExtraNodes()
+    {
+        // TODO NOW extra nodes get deleted in the middle of the loop, errors out because its not loop safe
+        int numberOfNodes = nodes.Count;
+        for(int i = 0; i < numberOfNodes; i++)
+        {
+            bool delete = true;
+            GameObject nodeGO = nodes[i];
+            foreach (BuilderTempInstruction bti in tempJoints)
+            {
+                if (bti.baseNode == nodeGO || bti.tailNode == nodeGO)
+                {
+                    delete = false;
+                    break;
+                }
+            }
+
+            if (delete)
+            {
+                /* TODO POP UP FOR ARE YOU SURE above this if statement
+                delete = Warning("This will delete nodes not connected to other nodes!\n" +
+                    "Are you sure you want to delete nodes not connected?\n");
+                    */
+                foreach (BuilderTempInstruction bti in tempJoints)
+                    AdjustNodeReferenceInInstruction(bti, nodeGO);
+                nodes.Remove(nodeGO);
+                Destroy(nodeGO);
+                numberOfNodes--;
+            }
+        }           
     }
     private void DeselectAllSelectedItems()
     {
@@ -197,20 +266,12 @@ public class BotEditorCameraTest : MonoBehaviour
                 curSelected.Add(hit.transform.gameObject);
 
                 if (myGizmos.Count < curSelected.Count)
-                    myGizmos.Add(Instantiate(GizmoPrefab, hit.transform.position, Quaternion.identity));
+                {
+                    GameObject giz = Instantiate(GizmoPrefab, hit.transform.position, Quaternion.identity);
+                    giz.transform.SetParent(hit.transform, true);
+                    myGizmos.Add(giz);
+                }
             }
-            else if (hit.transform.gameObject.tag == "GizmoX")
-                MoveSelected(new Vector3(1, 0, 0));
-            else if (hit.transform.gameObject.tag == "GizmoY")
-                MoveSelected(new Vector3(0, 1, 0));
-            else if (hit.transform.gameObject.tag == "GizmoZ")
-                MoveSelected(new Vector3(0, 0, 1));
-            else if (hit.transform.gameObject.tag == "GizmoXneg")
-                MoveSelected(new Vector3(-1, 0, 0));
-            else if (hit.transform.gameObject.tag == "GizmoYneg")
-                MoveSelected(new Vector3(0, -1, 0));
-            else if (hit.transform.gameObject.tag == "GizmoZneg")
-                MoveSelected(new Vector3(0, 0, -1));
             else if(hit.transform.gameObject.tag == "JointBuilder")
             {
                 int count = tempJoints.Count;
@@ -231,8 +292,8 @@ public class BotEditorCameraTest : MonoBehaviour
                     }                        
                 }
                 Destroy(hit.transform.gameObject);
-            }else
-                DeselectAllSelectedItems();
+            }//else
+               // DeselectAllSelectedItems();
         }
         else
             DeselectAllSelectedItems();

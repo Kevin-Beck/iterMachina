@@ -47,6 +47,7 @@ public class UIController : MonoBehaviour
     {
 
         gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
+        gd.ui = gameObject.GetComponent<UIController>();
 
         DebugIsOn = true;
         finished = false;

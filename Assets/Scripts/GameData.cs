@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
+    private static GameData exists;
+
     [Header("Positions Of Spawners")]
     [SerializeField]
     public Vector3 NodeSpawnerPosition;
@@ -41,7 +43,6 @@ public class GameData : MonoBehaviour
     public PopulationController pc;
     public LegoBox lb;
     public TerrainController tc;
-    public SceneController sc;
 
     [Header("Sine Factors")]
     [Header("Sin(a*Cos(b*time)+c)")]
@@ -52,13 +53,21 @@ public class GameData : MonoBehaviour
     public float cMin = -1.8f;
     public float cMax = 1.8f;
 
+    [Header("EditorData")]
+    public DNA editorDNA;
+
 
     public void Start() // Get Connections to relevant controllers
     {
-        ui = GameObject.FindGameObjectWithTag("UIController").GetComponent<UIController>();
-        pc = GameObject.FindGameObjectWithTag("PopulationController").GetComponent<PopulationController>();
-        lb = GameObject.FindGameObjectWithTag("LegoBox").GetComponent<LegoBox>();
-        tc = GameObject.FindGameObjectWithTag("TerrainController").GetComponent<TerrainController>();
-        sc = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
-    }    
+
+    }
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+
+        if (exists == null)
+            exists = this;
+        else
+            Destroy(gameObject);
+    }
 }
