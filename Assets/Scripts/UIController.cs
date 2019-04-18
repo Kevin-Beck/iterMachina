@@ -124,7 +124,8 @@ public class UIController : MonoBehaviour
         if (!finished)
         {
             float guiTime = Time.time - startTime;
-            timer.text = "Time: " + guiTime;
+            timer.text = string.Format("Time: {0:0.00}", guiTime);
+            genText.text = string.Format("Generation: " + gd.generationNumber);
         }
     }
 

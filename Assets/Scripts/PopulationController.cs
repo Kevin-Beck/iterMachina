@@ -48,15 +48,16 @@ public class PopulationController : MonoBehaviour
         //  StreamReader reader = new StreamReader("C:\\iterBot\\DNA.txt");
         currentBestDNA = gd.editorDNA;
 
-
+        
         CopyBestDNAToBrains();
         GeneratePopulationFromBestDNA();
         Invoke("TEMPLOOP3456", gd.testingtime);
     }
     public void TEMPLOOP3456()
     {
-        
+        gd.generationNumber++;
         gd.testingtime++;
+
         bool reset = false;
         if (Random.Range(0f, 1f) > .95f)
         {

@@ -53,18 +53,15 @@ public class BotEditorCameraTest : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("a"))
-        {
-            GameObject newNode = Instantiate(NodeBuilderPrefab, new Vector3(7.5f, 2f, 7.5f), Quaternion.identity);
-            newNode.GetComponent<Renderer>().enabled = true;
-            nodes.Add(newNode);
-        }
-        if(Input.GetKeyDown("d"))
+        if (Input.GetKeyDown("e"))
+            CreateEditorNode();
+
+        if(Input.GetKeyDown("f"))
         {
             DeleteCurSelectedNodes();
             curSelected.Clear();
         }
-        if(Input.GetKeyDown("j"))
+        if(Input.GetKeyDown("r"))
         {
             if(curSelected.Count == 2)
             {
@@ -80,6 +77,9 @@ public class BotEditorCameraTest : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
             LeftMouseButtonFunctions();
+
+        if (Input.GetMouseButtonDown(2))
+            CreateEditorNode();
 
         if(Input.GetMouseButtonUp(0))
             ResetGizmos();
@@ -149,7 +149,17 @@ public class BotEditorCameraTest : MonoBehaviour
     public void MoveSelected(Vector3 position)
     {
         foreach(GameObject go in curSelected)
-            go.GetComponent<Transform>().transform.position = position + go.GetComponent<Transform>().transform.position;
+        {
+            Transform t = go.GetComponent<Transform>();
+            Vector3 newPosition = position + t.transform.position;
+
+            // Ensures the piece stays in the boundaries
+            newPosition.x = Mathf.Max(0, Mathf.Min(newPosition.x, gd.areaForInstantiation.x));
+            newPosition.y = Mathf.Max(0.75f, Mathf.Min(newPosition.y, gd.areaForInstantiation.y));
+            newPosition.z = Mathf.Max(0, Mathf.Min(newPosition.z, gd.areaForInstantiation.z));
+
+            t.transform.position = newPosition;
+        }
 
         foreach (GameObject go in curSelected)
         {
@@ -180,6 +190,12 @@ public class BotEditorCameraTest : MonoBehaviour
     {
         Application.Quit();
     }
+    public void CreateEditorNode()
+    {
+        GameObject newNode = Instantiate(NodeBuilderPrefab, new Vector3(7.5f, 2f, 7.5f), Quaternion.identity);
+        newNode.GetComponent<Renderer>().enabled = true;
+        nodes.Add(newNode);
+    }
     public void SaveBot()
     {
         RemoveExtraNodes();
@@ -203,23 +219,22 @@ public class BotEditorCameraTest : MonoBehaviour
     }
     public void RemoveExtraNodes()
     {
-        // TODO NOW extra nodes get deleted in the middle of the loop, errors out because its not loop safe
         int numberOfNodes = nodes.Count;
         for(int i = 0; i < numberOfNodes; i++)
         {
             bool delete = true;
-            GameObject nodeGO = nodes[i];
+            GameObject nodeGO = nodes.ElementAt(i);
             foreach (BuilderTempInstruction bti in tempJoints)
             {
                 if (bti.baseNode == nodeGO || bti.tailNode == nodeGO)
                 {
                     delete = false;
-                    break;
                 }
             }
 
             if (delete)
             {
+                Debug.Log("Deleting node #" + i);
                 /* TODO POP UP FOR ARE YOU SURE above this if statement
                 delete = Warning("This will delete nodes not connected to other nodes!\n" +
                     "Are you sure you want to delete nodes not connected?\n");
@@ -229,6 +244,7 @@ public class BotEditorCameraTest : MonoBehaviour
                 nodes.Remove(nodeGO);
                 Destroy(nodeGO);
                 numberOfNodes--;
+                i--;
             }
         }           
     }
