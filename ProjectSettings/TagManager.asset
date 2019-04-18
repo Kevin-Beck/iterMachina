@@ -25,6 +25,7 @@ TagManager:
   - JointBuilder
   - SceneController
   - EditorController
+  - Arena
   layers:
   - Default
   - TransparentFX

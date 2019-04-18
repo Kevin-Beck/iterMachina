@@ -56,18 +56,14 @@ public class BotEditorCameraTest : MonoBehaviour
         if (Input.GetKeyDown("e"))
             CreateEditorNode();
 
-        if(Input.GetKeyDown("f"))
+        if(Input.GetKeyDown(KeyCode.Delete))
         {
             DeleteCurSelectedNodes();
             curSelected.Clear();
         }
         if(Input.GetKeyDown("r"))
-        {
             if(curSelected.Count == 2)
-            {
                 CheckAndCreateJoint(curSelected.ElementAt(0), curSelected.ElementAt(1));
-            }
-        }
 
         if (Input.GetMouseButtonDown(1))
             RightMouseButtonFunctions();
@@ -79,7 +75,10 @@ public class BotEditorCameraTest : MonoBehaviour
             LeftMouseButtonFunctions();
 
         if (Input.GetMouseButtonDown(2))
-            CreateEditorNode();
+            if (curSelected.Count == 2)
+                CheckAndCreateJoint(curSelected.ElementAt(0), curSelected.ElementAt(1));
+            else
+                CreateEditorNode();
 
         if(Input.GetMouseButtonUp(0))
             ResetGizmos();
@@ -308,8 +307,8 @@ public class BotEditorCameraTest : MonoBehaviour
                     }                        
                 }
                 Destroy(hit.transform.gameObject);
-            }//else
-               // DeselectAllSelectedItems();
+            }else if(hit.transform.gameObject.tag == "Arena")
+                DeselectAllSelectedItems();
         }
         else
             DeselectAllSelectedItems();
