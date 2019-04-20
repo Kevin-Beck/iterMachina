@@ -77,7 +77,7 @@ public class EditorUIController : MonoBehaviour
         InstructionCanvas.SetActive(!instructions);
         instructions = !instructions;
     }
-    public string GetCuteName()
+    public string GetCuteTxtFilename()
     {
         string name = "";
         name += FirstNames[Random.Range(0, FirstNames.Length)];
@@ -93,7 +93,7 @@ public class EditorUIController : MonoBehaviour
     public void WriteEditorDNAtoFile()
     {
         string path = Application.dataPath + "\\DNA\\Editor";
-        string fileName = GetCuteName();
+        string fileName = GetCuteTxtFilename();
         string data = gd.editorDNA.toDataString();
 
         try
@@ -102,7 +102,7 @@ public class EditorUIController : MonoBehaviour
                 Directory.CreateDirectory(path);
 
             while(File.Exists(path + "\\" + fileName))
-                fileName = GetCuteName();
+                fileName = GetCuteTxtFilename() + ".txt";
 
             File.WriteAllText(path + "\\" + fileName, data);
         }

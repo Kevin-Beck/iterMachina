@@ -4,27 +4,23 @@ using UnityEngine;
 
 public class Selected : MonoBehaviour
 {
-    bool selected;
     Renderer rend;
-
-    private void Start()
+    // TODO pretty sure this can be optimized a tad easier
+    private void Awake()
     {
         rend = GetComponent<Renderer>();
-        selected = false;
+        rend.material.color = Color.blue;
     }
     private void Update()
     {
-        if (selected)
-            rend.material.color = Color.cyan;
-        else
-            rend.material.color = Color.blue;
+
     }
     public void Deselect()
     {
-        selected = false;
+        rend.material.color = Color.blue;
     }
     public void Select()
     {
-        selected = true;
+        rend.material.color = Color.cyan;
     }
 }

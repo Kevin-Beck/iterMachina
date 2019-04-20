@@ -46,7 +46,10 @@ public class BotEditorCameraTest : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown("e"))
-            CreateEditorNode();
+            CreateEditorNodeAtCursorLocation();
+
+        if (Input.GetKeyDown("c"))
+            CopySelectedNodes();
 
         if(Input.GetKeyDown(KeyCode.Delete))
         {
@@ -67,7 +70,7 @@ public class BotEditorCameraTest : MonoBehaviour
             LeftMouseButtonFunctions();
 
         if (Input.GetMouseButtonDown(2))
-            CreateEditorNode();
+            CreateEditorNodeAtCursorLocation();
 
         if(Input.GetMouseButtonUp(0))
             ResetGizmos();
@@ -171,7 +174,21 @@ public class BotEditorCameraTest : MonoBehaviour
             DeleteJointsConnectedToNode(go);
         }
     }
-
+    private void CopySelectedNodes()
+    {
+        int selectedCount = curSelected.Count();
+        for(int i = 0; i < selectedCount; i++)
+        {
+            AddToSelected(CreateEditorNode(curSelected.ElementAt(0).transform.position));
+            RemoveFromSelected(curSelected.ElementAt(0));
+        }
+    }
+    public void RemoveFromSelected(GameObject toBeRemovedObject)
+    {
+        toBeRemovedObject.GetComponent<Selected>().Deselect();
+        curSelected.Remove(toBeRemovedObject);
+        ResetGizmos();
+    }
     public void ResetGizmos()
     {
         foreach (GameObject go in myGizmos)
@@ -192,7 +209,14 @@ public class BotEditorCameraTest : MonoBehaviour
         newPosition.z = Mathf.Max(0, Mathf.Min(newPosition.z, gd.areaForInstantiation.z));
         return newPosition;
     }
-    public void CreateEditorNode()
+    public GameObject CreateEditorNode(Vector3 position)
+    {
+        GameObject myNode = Instantiate(NodeBuilderPrefab, position, Quaternion.identity);
+        myNode.GetComponent<Renderer>().enabled = true;
+        nodes.Add(myNode);
+        return myNode;
+    }
+    public void CreateEditorNodeAtCursorLocation()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -200,10 +224,8 @@ public class BotEditorCameraTest : MonoBehaviour
         Physics.Raycast(ray, out hit);
         
         Vector3 position = ReturnValidPositionForNodeNearestPoint(hit.point);
-        
-        GameObject newNode = Instantiate(NodeBuilderPrefab, position, Quaternion.identity);
-        newNode.GetComponent<Renderer>().enabled = true;
-        nodes.Add(newNode);
+
+        CreateEditorNode(position);
     }
     public void SaveBot()
     {
@@ -277,6 +299,22 @@ public class BotEditorCameraTest : MonoBehaviour
         cameraRig.enabled = true;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
     }
+
+    private void AddToSelected(GameObject newSelected)
+    {
+        newSelected.GetComponent<Selected>().Select();
+        curSelected.Add(newSelected);
+        AddNewGizmo(newSelected.transform);
+    }
+    private void AddNewGizmo(Transform attached)
+    {
+        if (myGizmos.Count != curSelected.Count)
+        {
+            GameObject giz = Instantiate(GizmoPrefab, attached.position, Quaternion.identity);
+            giz.transform.SetParent(attached, true);
+            myGizmos.Add(giz);
+        }
+    }
     private void LeftMouseButtonFunctions()
     { 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -287,16 +325,10 @@ public class BotEditorCameraTest : MonoBehaviour
             {
                 if (!Input.GetKey(KeyCode.LeftShift))
                     DeselectAllSelectedItems();
-                hit.transform.gameObject.GetComponent<Selected>().Select();
-                curSelected.Add(hit.transform.gameObject);
 
-                if (myGizmos.Count < curSelected.Count)
-                {
-                    GameObject giz = Instantiate(GizmoPrefab, hit.transform.position, Quaternion.identity);
-                    giz.transform.SetParent(hit.transform, true);
-                    myGizmos.Add(giz);
-                }
-                if(Input.GetKey(KeyCode.LeftShift))
+                AddToSelected(hit.transform.gameObject);
+
+                if (Input.GetKey(KeyCode.LeftShift))
                     if (curSelected.Count > 1)
                         CheckAndCreateJoint(curSelected.ElementAt(curSelected.Count-2), curSelected.ElementAt(curSelected.Count-1));
             }
