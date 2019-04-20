@@ -4,7 +4,6 @@ public class CameraMover : MonoBehaviour
 {
     Transform t;
     [SerializeField] float speed = 3f;
-    [SerializeField] float SquareMaxTravel = 49f;
     Vector3 startPos;
 
     private void Start()

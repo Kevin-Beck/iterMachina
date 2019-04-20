@@ -6,6 +6,14 @@ public class GameData : MonoBehaviour
 {
     private static GameData exists;
 
+    [Header("UI Elements")]
+    // constants used to shape and scale the UI panels and buttons
+    public float sizeOfButtonMargin = 2;
+    public float widthOfButton = 160;
+    public float heightOfButton = 30;
+    public float verticalSpacing = 0;
+    [SerializeField] public GameObject buttonPrefab;
+
     [Header("Positions Of Spawners")]
     [SerializeField]
     public Vector3 NodeSpawnerPosition;

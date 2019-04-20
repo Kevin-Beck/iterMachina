@@ -66,7 +66,7 @@ public class PopulationController : MonoBehaviour
         CalculateAllScores();
         DeconstructPopulation();
 
-        gd.numberPerRow = 8;
+        gd.numberPerRow = 6;
 
         if(reset)
         {

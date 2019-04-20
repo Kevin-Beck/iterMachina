@@ -4,11 +4,13 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System;
 
 public class BotEditorCameraTest : MonoBehaviour
 {
-    public FreeCameraLook cameraRig;
 
+    public FreeCameraLook cameraRig;
+    public Camera cam;
     [SerializeField] GameObject GizmoPrefab = null;
     [SerializeField] GameObject NodeBuilderPrefab = null;
     [SerializeField] GameObject JointBuilderPrefab = null;
@@ -22,12 +24,12 @@ public class BotEditorCameraTest : MonoBehaviour
 
     List<BuilderTempInstruction> tempJoints = null;
 
-    [SerializeField] GameObject InstructionCanvas = null;
-    bool instructions = false;
 
     void Start()
     {
-        if(gd == null)
+        cam = Camera.main;
+
+        if (gd == null)
         {
             gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
             tempJoints = new List<BuilderTempInstruction>();
@@ -37,17 +39,7 @@ public class BotEditorCameraTest : MonoBehaviour
         }
         if(gd.editorDNA != null)
         {
-            tempJoints = new List<BuilderTempInstruction>();
-            nodes = new List<GameObject>();
-            foreach (Vector3 pos in gd.editorDNA.nodePositions)
-                nodes.Add(Instantiate(NodeBuilderPrefab, pos, Quaternion.identity));
-            foreach (Instruction inst in gd.editorDNA.designInstructions)
-            {
-                GameObject newNode = nodes.ElementAt(inst.targetNode);
-                GameObject oldNode = nodes.ElementAt(inst.baseNode);
-
-                CheckAndCreateJoint(oldNode, newNode);
-            }
+            ConstructBotFromEditorDNA();
         }
     }
 
@@ -75,13 +67,24 @@ public class BotEditorCameraTest : MonoBehaviour
             LeftMouseButtonFunctions();
 
         if (Input.GetMouseButtonDown(2))
-            if (curSelected.Count == 2)
-                CheckAndCreateJoint(curSelected.ElementAt(0), curSelected.ElementAt(1));
-            else
-                CreateEditorNode();
+            CreateEditorNode();
 
         if(Input.GetMouseButtonUp(0))
             ResetGizmos();
+    }
+    public void ConstructBotFromEditorDNA()
+    {
+        tempJoints = new List<BuilderTempInstruction>();
+        nodes = new List<GameObject>();
+        foreach (Vector3 pos in gd.editorDNA.nodePositions)
+            nodes.Add(Instantiate(NodeBuilderPrefab, pos, Quaternion.identity));
+        foreach (Instruction inst in gd.editorDNA.designInstructions)
+        {
+            GameObject newNode = nodes.ElementAt(inst.targetNode);
+            GameObject oldNode = nodes.ElementAt(inst.baseNode);
+
+            CheckAndCreateJoint(oldNode, newNode);
+        }
     }
     private void DeleteCurSelectedNodes() // Deletes nodes (and connected joints)
     {
@@ -107,6 +110,16 @@ public class BotEditorCameraTest : MonoBehaviour
             }
             AdjustNodeReferenceInInstruction(bti, node);
         }
+    }
+    public void DeleteAllNodesAndJoints()
+    {
+        foreach (GameObject node in nodes)
+            DeleteJointsConnectedToNode(node);
+
+        foreach (GameObject node in nodes)
+            Destroy(node);
+        nodes.Clear();
+        tempJoints.Clear();
     }
     private void AdjustNodeReferenceInInstruction(BuilderTempInstruction tempInst, GameObject nodeGO)
     {
@@ -151,20 +164,14 @@ public class BotEditorCameraTest : MonoBehaviour
         {
             Transform t = go.GetComponent<Transform>();
             Vector3 newPosition = position + t.transform.position;
-
-            // Ensures the piece stays in the boundaries
-            newPosition.x = Mathf.Max(0, Mathf.Min(newPosition.x, gd.areaForInstantiation.x));
-            newPosition.y = Mathf.Max(0.75f, Mathf.Min(newPosition.y, gd.areaForInstantiation.y));
-            newPosition.z = Mathf.Max(0, Mathf.Min(newPosition.z, gd.areaForInstantiation.z));
-
-            t.transform.position = newPosition;
+            t.transform.position = ReturnValidPositionForNodeNearestPoint(newPosition);
         }
-
         foreach (GameObject go in curSelected)
         {
             DeleteJointsConnectedToNode(go);
         }
     }
+
     public void ResetGizmos()
     {
         foreach (GameObject go in myGizmos)
@@ -176,22 +183,25 @@ public class BotEditorCameraTest : MonoBehaviour
             myGizmos.Add(giz);
         }
     }
-    public void ToggleInstructionPanel()
+
+    public Vector3 ReturnValidPositionForNodeNearestPoint(Vector3 newPosition)
     {
-        InstructionCanvas.SetActive(!instructions);
-        instructions = !instructions;
-    }
-    public void ContinueToSim()
-    {
-        SceneManager.LoadScene(1);
-    }
-    public void ExitProgram()
-    {
-        Application.Quit();
+        // Ensures the piece stays in the boundaries
+        newPosition.x = Mathf.Max(0, Mathf.Min(newPosition.x, gd.areaForInstantiation.x));
+        newPosition.y = Mathf.Max(0.75f, Mathf.Min(newPosition.y, gd.areaForInstantiation.y));
+        newPosition.z = Mathf.Max(0, Mathf.Min(newPosition.z, gd.areaForInstantiation.z));
+        return newPosition;
     }
     public void CreateEditorNode()
     {
-        GameObject newNode = Instantiate(NodeBuilderPrefab, new Vector3(7.5f, 2f, 7.5f), Quaternion.identity);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit);
+        
+        Vector3 position = ReturnValidPositionForNodeNearestPoint(hit.point);
+        
+        GameObject newNode = Instantiate(NodeBuilderPrefab, position, Quaternion.identity);
         newNode.GetComponent<Renderer>().enabled = true;
         nodes.Add(newNode);
     }
@@ -268,7 +278,7 @@ public class BotEditorCameraTest : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
     }
     private void LeftMouseButtonFunctions()
-    {
+    { 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -286,6 +296,9 @@ public class BotEditorCameraTest : MonoBehaviour
                     giz.transform.SetParent(hit.transform, true);
                     myGizmos.Add(giz);
                 }
+                if(Input.GetKey(KeyCode.LeftShift))
+                    if (curSelected.Count > 1)
+                        CheckAndCreateJoint(curSelected.ElementAt(curSelected.Count-2), curSelected.ElementAt(curSelected.Count-1));
             }
             else if(hit.transform.gameObject.tag == "JointBuilder")
             {
@@ -294,18 +307,11 @@ public class BotEditorCameraTest : MonoBehaviour
                 {
                     if(tempJoints[i].joint == hit.transform.gameObject)
                     {
-                        tempJoints.Remove(tempJoints[i]);
-                        break;
+                        tempJoints.Remove(tempJoints[i--]);
+                        count--;
                     }
                 }
-                foreach(BuilderTempInstruction bti in tempJoints)
-                {
-                    if (bti.joint = hit.transform.gameObject)
-                    {
-                        tempJoints.Remove(bti);
-                        break;
-                    }                        
-                }
+
                 Destroy(hit.transform.gameObject);
             }else if(hit.transform.gameObject.tag == "Arena")
                 DeselectAllSelectedItems();

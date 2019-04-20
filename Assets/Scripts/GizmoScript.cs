@@ -19,18 +19,14 @@ public class GizmoScript : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        bect = GameObject.FindGameObjectWithTag("EditorController").GetComponent<BotEditorCameraTest>();
-        
+        bect = GameObject.FindGameObjectWithTag("EditorController").GetComponent<BotEditorCameraTest>();      
     }
 
     private void OnMouseDrag()
     {
         if (firstFrame)
         {
-            Vector2 mousePos = new Vector2();
-            mousePos.x = Input.mousePosition.x;
-            mousePos.y = Input.mousePosition.y;
-            lastFramePosition = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, cam.nearClipPlane));
+            lastFramePosition = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cam.nearClipPlane));
             firstFrame = false;
         }
         else

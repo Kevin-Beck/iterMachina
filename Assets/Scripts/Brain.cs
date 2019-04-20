@@ -18,7 +18,6 @@ public class Brain : MonoBehaviour
 
     Vector3 ILLEGALVECTOR = new Vector3(-999, -999, -999); // This is returned if no valid position is found for node
 
-    // Awake is used to initialize the data for anything uninitialized
     public void Awake()
     {
         gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();

@@ -1245,7 +1245,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1317997521}
+  - {fileID: 1322778357}
   - {fileID: 41757710}
   - {fileID: 27718027}
   - {fileID: 530744136}
@@ -1270,10 +1270,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3906478720f83a24587adc13cf9dd82f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPrefab: {fileID: 5220343250759851388, guid: e4dfc812a6159a4458b1132ad7e5fc73,
-    type: 3}
   timer: {fileID: 2105402504}
   genText: {fileID: 690520791}
+  mainPanel: {fileID: 0}
 --- !u!1 &1208198816
 GameObject:
   m_ObjectHideFlags: 0
@@ -1399,7 +1398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
---- !u!1 &1317997520
+--- !u!1 &1322778356
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1407,43 +1406,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1317997521}
-  - component: {fileID: 1317997523}
-  - component: {fileID: 1317997522}
-  - component: {fileID: 1317997524}
+  - component: {fileID: 1322778357}
+  - component: {fileID: 1322778359}
+  - component: {fileID: 1322778358}
   m_Layer: 5
-  m_Name: MainPanel
+  m_Name: ButtonPanel
   m_TagString: MainButtonPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1317997521
+--- !u!224 &1322778357
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317997520}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 1322778356}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.23438, y: 1.23438, z: 0.61719}
   m_Children: []
   m_Father: {fileID: 1201829126}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 82, y: 76.5}
-  m_SizeDelta: {x: 164, y: 152.5}
+  m_AnchoredPosition: {x: 107.495544, y: 85.83844}
+  m_SizeDelta: {x: 174.17, y: 139.08}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1317997522
+--- !u!114 &1322778358
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317997520}
+  m_GameObject: {fileID: 1322778356}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -1466,26 +1464,14 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!222 &1317997523
+--- !u!222 &1322778359
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317997520}
+  m_GameObject: {fileID: 1322778356}
   m_CullTransparentMesh: 0
---- !u!114 &1317997524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1317997520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48039898068b9af4caaade0bd0fe449c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1581126049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1817,6 +1803,86 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886209883}
   m_CullTransparentMesh: 0
+--- !u!1 &1960086570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1960086572}
+  - component: {fileID: 1960086571}
+  m_Layer: 0
+  m_Name: GameData
+  m_TagString: GameData
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1960086571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960086570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c033bcbd9b6dde4996793591cb2c59e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sizeOfButtonMargin: 2
+  widthOfButton: 160
+  heightOfButton: 30
+  verticalSpacing: 0
+  buttonPrefab: {fileID: 7882968919208167498, guid: e4dfc812a6159a4458b1132ad7e5fc73,
+    type: 3}
+  NodeSpawnerPosition: {x: 0, y: -100, z: 0}
+  nodeSpawnerSpacing: 2
+  JointSpawnerPosition: {x: 0, y: -110, z: 0}
+  jointSpawnerSpacing: 2
+  distanceBetweenInstantiations: 40
+  numberPerRow: 8
+  MAX_PER_ROW: 15
+  generationNumber: 0
+  testingtime: 15
+  bestScore: 0
+  areaForInstantiation: {x: 15, y: 5, z: 15}
+  numberOfNodes: 8
+  additionalConnections: 3
+  chanceToMutateJoint: 0.75
+  chanceToRerollJointEntirely: 0.1
+  brainPrefab: {fileID: 3334053556957822947, guid: d8c0562d47e373c46970d94ed2500528,
+    type: 3}
+  nodePrefab: {fileID: 3488963377728097675, guid: ce4a7dd8025345644ae622cdc4a444bf,
+    type: 3}
+  jointPrefab: {fileID: 7541475562697565100, guid: 9761b54c45c23a347b8b583a572d8cba,
+    type: 3}
+  ui: {fileID: 0}
+  pc: {fileID: 0}
+  lb: {fileID: 0}
+  tc: {fileID: 0}
+  aMin: 0
+  aMax: 5
+  bMin: 0
+  bMax: 3.2
+  cMin: -1.8
+  cMax: 1.8
+--- !u!4 &1960086572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960086570}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1997810508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,7 +2005,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1188163467}
   m_Direction: 2
   m_Value: 0.00000002192161
-  m_Size: 0.023857096
+  m_Size: 0.023840873
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

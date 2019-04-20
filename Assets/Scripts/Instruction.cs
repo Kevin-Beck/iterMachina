@@ -47,13 +47,13 @@ public class Instruction
     // To String is used externally for data analysis
     public string toData()
     {
-
         // For simplicity in making csv's later I'm making the Instruction csv when toStringing
         return "" +
             baseNode.ToString() + ", " +
             targetNode.ToString() + ", " +
             sineA.ToString() + ", " +
             sineB.ToString() + ", " +
-            sineC.ToString() + "";
+            sineC.ToString() + ", " +
+            rotation;
     }
 }

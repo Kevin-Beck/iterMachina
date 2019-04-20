@@ -15,8 +15,6 @@ public class DNA
         nodePositions = new List<Vector3>();
         designInstructions = new List<Instruction>();
     }
-    // TEMP COMMENTING OUT STRING
-    /* This does not properly account for rotation of joint objects
     public DNA(string dnaString)
     {
         nodePositions = new List<Vector3>();
@@ -26,9 +24,8 @@ public class DNA
         string s = dnaString.Replace(" ", String.Empty);
         string[] values = s.Split(',');
         float[] valuesf = Array.ConvertAll(values, float.Parse);
-        //
+
         int numberOfNodes = (int)valuesf[valuesf.Length - 2];
-        Debug.Log(numberOfNodes);
         int numberOfInstructions = (int)valuesf[valuesf.Length-1];
 
         for(int i = 0; i < numberOfNodes*3; i++)
@@ -39,7 +36,7 @@ public class DNA
 
             AddToPositions(new Vector3(x, y, z));
         }
-        for (int i = numberOfNodes * 3; i < values.Length - 6; i++)
+        for (int i = numberOfNodes * 3; i < values.Length - 7; i++)
         {
             int baseNode = (int) valuesf[i];
             int targetNode = (int) valuesf[++i];
@@ -47,11 +44,11 @@ public class DNA
             float b = valuesf[++i];
             float c = valuesf[++i];
 
-            AddToInstructions(new Instruction(baseNode, targetNode, new Vector3(a, b, c)));
+            float rotation = valuesf[++i];
+
+            AddToInstructions(new Instruction(baseNode, targetNode, new Vector3(a, b, c), rotation));
         }
-        Debug.Log(toData());
     }
-    */
     public DNA(List<Vector3> pos, List<Instruction> inst)
     {
         nodePositions = pos;
@@ -78,7 +75,7 @@ public class DNA
         designInstructions = new List<Instruction>();
     }
 
-    public string toData()
+    public string toDataString()
     {
         StringBuilder sb = new StringBuilder();
         foreach (Vector3 np in nodePositions)
@@ -95,6 +92,7 @@ public class DNA
         sb.Append(designInstructions.Count);
         return sb.ToString();
     }
+
     public void ClearDNA()
     {
         nodePositions.Clear();

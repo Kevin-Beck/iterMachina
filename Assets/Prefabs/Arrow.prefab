@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 8716077654546010021}
   m_Layer: 0
   m_Name: ArrowRight
-  m_TagString: Untagged
+  m_TagString: Arena
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 6192335491465206016}
   m_Layer: 0
   m_Name: ArrowLeft
-  m_TagString: Untagged
+  m_TagString: Arena
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
