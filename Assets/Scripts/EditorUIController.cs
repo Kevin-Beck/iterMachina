@@ -16,7 +16,6 @@ public class EditorUIController : MonoBehaviour
 
     [SerializeField] GameObject mainPanel = null;
     [SerializeField] GameObject InstructionCanvas = null;
-    [SerializeField] InputField dnaInputText;
     bool instructions = false;
 
     string[] FirstNames = { "adorable", "beautiful","clean","drab","elegant","fancy","glamorous","handsome",
@@ -65,8 +64,6 @@ public class EditorUIController : MonoBehaviour
 
     void OnFiles(List<string> aFiles, POINT aPos)
     {
-        // do something with the dropped file names. aPos will contain the 
-        // mouse position within the window where the files has been dropped.
         Debug.LogError("Dropped " + aFiles.Count + " files at: " + aPos + "\n" +
             aFiles.Aggregate((a, b) => a + "\n" + b));
 
@@ -108,10 +105,9 @@ public class EditorUIController : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            string ErrorMessages = "File Write Error\n" + ex.Message;
+            string ErrorMessages = "Error Writing DNA File\n" + ex.Message;
             Debug.LogError(ErrorMessages);
         }
-        Debug.LogError("Done");
     }
     public void ConsoleDNAString()
     {
@@ -125,12 +121,6 @@ public class EditorUIController : MonoBehaviour
     {
         SaveBot();
         SceneManager.LoadScene(1);
-    }
-    public void CreateBotFromInputField()
-    {
-        ClearBot();
-        gd.editorDNA = new DNA(dnaInputText.text);
-        bect.ConstructBotFromEditorDNA();
     }
     public void ExitProgram()
     {
@@ -151,7 +141,6 @@ public class EditorUIController : MonoBehaviour
         Dictionary<string, UnityAction> mainPanelButtonActions = new Dictionary<string, UnityAction>
         {            
             { "Save Bot",           () => SaveToFileWrapper()           },
-      //      { "BuildFromText",      () => CreateBotFromInputField()     },
       //      { "Print",              () => ConsoleDNAString()            },
             { "Reset",              () => ClearBot()                    },
             { "Instructions",       () => ToggleInstructionPanel()      },

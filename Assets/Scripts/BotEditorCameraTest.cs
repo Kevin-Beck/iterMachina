@@ -8,7 +8,6 @@ using System;
 
 public class BotEditorCameraTest : MonoBehaviour
 {
-
     public FreeCameraLook cameraRig;
     public Camera cam;
     [SerializeField] GameObject GizmoPrefab = null;

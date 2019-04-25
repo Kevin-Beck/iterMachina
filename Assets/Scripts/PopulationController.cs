@@ -56,7 +56,6 @@ public class PopulationController : MonoBehaviour
     public void TEMPLOOP3456()
     {
         gd.generationNumber++;
-        gd.testingtime++;
 
         bool reset = false;
         if (Random.Range(0f, 1f) > .95f)

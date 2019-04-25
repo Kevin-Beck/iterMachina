@@ -25,13 +25,6 @@ public class UIController : MonoBehaviour
 
     //Panels used, each panel gets its buttons added in dynamically using the dictionaries 
     [SerializeField] GameObject mainPanel = null;
-
-
-
-    // DataLog
-    bool DebugIsOn;
-    GameObject dataLogPanel;
-    Text DataLog = null;
     
     // Settings Menu
     GameObject settingsPanel;
@@ -42,7 +35,6 @@ public class UIController : MonoBehaviour
         gd = GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>();
         gd.ui = gameObject.GetComponent<UIController>();
 
-        DebugIsOn = true;
         finished = false;
         startTime = Time.time;
     }
@@ -60,14 +52,10 @@ public class UIController : MonoBehaviour
         // TODO also make the settings menu work like the Main Panel too cause its good
 
         // disable all hidden elements
-        dataLogPanel.SetActive(false);
         settingsPanel.SetActive(false);
     }
     private void FindAllRelevantUIObjects()
     {
-        mainPanel = GameObject.FindGameObjectWithTag("MainButtonPanel");
-        DataLog = GameObject.FindGameObjectWithTag("DataLog").GetComponent<Text>();
-        dataLogPanel = GameObject.FindGameObjectWithTag("DataLogPanel");
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
     }
 
@@ -126,11 +114,6 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void LogDataToScreen(string data)
-    {
-        if(DebugIsOn)
-            DataLog.text = string.Concat(DataLog.text, System.Environment.NewLine, data);
-    }
     public void ToggleShowSettingsMenu()
     {
         settingsPanel.SetActive(!settingsPanel.activeSelf);
