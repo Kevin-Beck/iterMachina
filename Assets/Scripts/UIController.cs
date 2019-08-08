@@ -110,7 +110,7 @@ public class UIController : MonoBehaviour
         {
             float guiTime = Time.time - startTime;
             timer.text = string.Format("Time: {0:0.00}", guiTime);
-            genText.text = string.Format("Generation: " + gd.generationNumber);
+            genText.text = string.Format("Gen: " + gd.generationNumber);
         }
     }
 

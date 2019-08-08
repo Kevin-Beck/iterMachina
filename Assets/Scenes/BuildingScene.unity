@@ -780,7 +780,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainPanel: {fileID: 1412233519}
   InstructionCanvas: {fileID: 1959948841}
-  dnaInputText: {fileID: 40207214}
 --- !u!114 &529633684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -838,7 +837,7 @@ MonoBehaviour:
   generationNumber: 0
   testingtime: 15
   bestScore: 0
-  areaForInstantiation: {x: 15, y: 5, z: 15}
+  areaForInstantiation: {x: 15, y: 8, z: 15}
   numberOfNodes: 8
   additionalConnections: 3
   chanceToMutateJoint: 0.75
