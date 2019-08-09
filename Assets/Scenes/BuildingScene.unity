@@ -964,7 +964,11 @@ MonoBehaviour:
     Clicking a white joint sphere will delete the joint.
 
 
-    Moving a node will delete all joints attached to that node.'
+    Moving a node will delete all joints attached to that node.
+
+
+    Select nodes, then press ''c'' to copy all those nodes, then move all new copied
+    nodes together.'
 --- !u!222 &549354202
 CanvasRenderer:
   m_ObjectHideFlags: 0
